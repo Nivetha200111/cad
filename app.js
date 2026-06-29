@@ -134,8 +134,8 @@
     const qstats=LS.get('qstats',{});
     const byText={}; Q.forEach(q=>byText[q.q]=q);
     const missed=Object.entries(qstats)
-      .filter(([t,s])=>byText[t] && (s.lastWrong || s.wrong>0))
-      .sort((a,b)=>((b[1].wrong-b[1].right)-(a[1].wrong-a[1].right)) || (b[1].lastTs-a[1].lastTs))
+      .filter(([t,s])=>byText[t] && s.lastWrong)
+      .sort((a,b)=>(b[1].wrong-a[1].wrong) || (b[1].lastTs-a[1].lastTs))
       .map(([t])=>byText[t]._id);
     if(missed.length) return {ids:missed, reason:'missed'};
     // fallback: weakest topics from saved exam scores
@@ -248,9 +248,10 @@
     app.innerHTML='';
     const ids=run.ids, q=Q[ids[run.pos]];
     const answered=Object.keys(run.answers).length;
+    const weak=run.mode==='weak';
     app.append(el('div',{class:'qhead'},
-      el('button',{class:'btn ghost sm',onclick:()=>{if(confirm('Leave quiz? Progress for this attempt is lost.'))go('quizzes');}},'✕ Exit'),
-      el('div',{class:'badge'},'Exam '+(run.quiz+1)),
+      el('button',{class:'btn ghost sm',onclick:()=>{if(confirm('Leave quiz? Progress for this attempt is lost.'))go(weak?'weakquiz':'quizzes');}},'✕ Exit'),
+      el('div',{class:'badge'}, weak?'🎯 Weak Quiz':'Exam '+(run.quiz+1)),
       el('div',{class:'progress'}, el('i',{style:'width:'+((run.pos+1)/ids.length*100)+'%'})),
       el('div',{class:'badge'}, (run.pos+1)+'/'+ids.length),
       el('div',{class:'badge'}, answered+' answered')
@@ -299,8 +300,8 @@
     nav.append(el('button',{class:'btn ghost',onclick:()=>{if(run.pos>0){run.pos--;renderQuiz();}},disabled:run.pos===0?'':null},'‹ Prev'));
     const right=el('div',{style:'display:flex;gap:10px'});
     if(run.pos<ids.length-1) right.append(el('button',{class:'btn',onclick:()=>{run.pos++;renderQuiz();}},'Next ›'));
-    if(!run.submitted) right.append(el('button',{class:'btn',onclick:submitQuiz},'✓ Submit exam'));
-    else right.append(el('button',{class:'btn',onclick:()=>showResult(run.quiz)},'See results'));
+    if(!run.submitted) right.append(el('button',{class:'btn',onclick:submitQuiz}, weak?'✓ Submit':'✓ Submit exam'));
+    else right.append(el('button',{class:'btn',onclick:()=>weak?showWeakResult():showResult(run.quiz)},'See results'));
     nav.append(right);
     app.append(nav);
 
@@ -341,26 +342,31 @@
     });
     LS.set('qstats',qstats);
   }
+  let lastWeak=null; // transient result of the most recent weak quiz
   async function submitQuiz(){
     const unanswered=run.ids.length-Object.keys(run.answers).length;
     if(unanswered>0 && !confirm(unanswered+' question(s) unanswered. Submit anyway?'))return;
     run.submitted=true;
     const g=gradeRun();
+    recordQuestionStats(g.results);          // always update per-question mastery
+    refreshHeader();
+    if(run.mode==='weak'){
+      lastWeak={pct:g.pct,correct:g.correct,total:g.total,perTopic:g.perTopic};
+      showWeakResult();
+      return;
+    }
     const scores=LS.get('quizScores',{});
     scores[run.quiz]={pct:g.pct,correct:g.correct,total:g.total,perTopic:g.perTopic,ts:Date.now()};
     LS.set('quizScores',scores);
-    recordQuestionStats(g.results);
-    refreshHeader();
     showResult(run.quiz);
-    // persist to cloud (best-effort)
     if(state.online && state.player){
       API.saveAttempt({player:state.player,quiz:run.quiz,pct:g.pct,correct:g.correct,total:g.total,perTopic:g.perTopic})
         .catch(()=>{});
     }
   }
 
-  function showResult(i){
-    const scores=LS.get('quizScores',{}); const sc=scores[i];
+  // Shared result view (hero medallion + topic breakdown + actions)
+  function renderResultView(sc, opts){
     app.innerHTML='';
     const pass=sc.pct>=PASS;
     const hero=el('div',{class:'card score-hero'});
@@ -368,21 +374,17 @@
     ring.append(el('div',{class:'inner'},el('div',{class:'pct'},sc.pct+'%'),el('div',{class:'lbl'},sc.correct+' / '+sc.total+' correct')));
     hero.append(ring);
     hero.append(el('div',{class:'verdict '+(pass?'pass':'fail')}, pass?'PASS':'NOT YET'));
-    hero.append(el('div',{class:'muted'}, 'Passing score is '+PASS+'%. Exam '+(i+1)+(state.online?' • saved to cloud':' • saved locally')+'.'));
+    hero.append(el('div',{class:'muted'}, opts.subtitle));
     hero.append(el('div',{class:'kpis'},
       el('div',{class:'kpi'},el('b',{},sc.correct),el('span',{},'Correct')),
       el('div',{class:'kpi'},el('b',{},(sc.total-sc.correct)),el('span',{},'Incorrect')),
       el('div',{class:'kpi'},el('b',{},sc.pct+'%'),el('span',{},'Score'))
     ));
-    hero.append(el('div',{style:'margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap'},
-      el('button',{class:'btn',onclick:()=>{run={quiz:i,ids:QUIZZES[i].slice(),pos:0,answers:{},submitted:false};renderQuiz();}},'↻ Retake'),
-      el('button',{class:'btn ghost',onclick:()=>{run={quiz:i,ids:QUIZZES[i].slice(),pos:0,answers:run.answers,submitted:true};renderQuiz();}},'🔍 Review answers'),
-      el('button',{class:'btn ghost',onclick:()=>go('quizzes')},'← All exams')
-    ));
+    hero.append(el('div',{style:'margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap'}, ...opts.actions));
     app.append(hero);
 
     const tcard=el('div',{class:'card',style:'margin-top:16px'});
-    tcard.append(el('div',{class:'section-h'},'Topic breakdown — this exam'));
+    tcard.append(el('div',{class:'section-h'}, opts.breakdownLabel||'Topic breakdown'));
     Object.entries(sc.perTopic).sort((a,b)=>(a[1].c/a[1].t)-(b[1].c/b[1].t)).forEach(([t,v])=>{
       const p=Math.round(v.c/v.t*100);
       tcard.append(el('div',{class:'bar-row'},
@@ -392,6 +394,85 @@
       ));
     });
     app.append(tcard);
+  }
+
+  function showResult(i){
+    const sc=LS.get('quizScores',{})[i];
+    renderResultView(sc, {
+      subtitle:'Passing score is '+PASS+'%. Exam '+(i+1)+(state.online?' • saved to cloud':' • saved locally')+'.',
+      breakdownLabel:'Topic breakdown — this exam',
+      actions:[
+        el('button',{class:'btn',onclick:()=>{run={quiz:i,ids:QUIZZES[i].slice(),pos:0,answers:{},submitted:false};renderQuiz();}},'↻ Retake'),
+        el('button',{class:'btn ghost',onclick:()=>{run={quiz:i,ids:QUIZZES[i].slice(),pos:0,answers:run.answers,submitted:true};renderQuiz();}},'🔍 Review answers'),
+        el('button',{class:'btn ghost',onclick:()=>go('quizzes')},'← All exams')
+      ]
+    });
+  }
+
+  function showWeakResult(){
+    const sc=lastWeak;
+    renderResultView(sc, {
+      subtitle:'Targeted practice on your missed questions. Correct answers now drop out of your weak set.',
+      breakdownLabel:'Topic breakdown — weak quiz',
+      actions:[
+        el('button',{class:'btn',onclick:()=>startWeakQuiz()},'↻ New weak quiz'),
+        el('button',{class:'btn ghost',onclick:()=>{run.pos=0;run.submitted=true;renderQuiz();}},'🔍 Review answers'),
+        el('button',{class:'btn ghost',onclick:()=>go('weakquiz')},'← Weak Quiz')
+      ]
+    });
+  }
+
+  /* ===================== TAB: WEAK QUIZ ===================== */
+  function startWeakQuiz(){
+    const wd=weakDeck();
+    if(!wd.ids.length){ go('weakquiz'); return; }
+    const ids=wd.ids.slice(0,60);
+    run={ mode:'weak', quiz:'weak', ids, pos:0, answers:{}, submitted:false };
+    renderQuiz();
+  }
+  function renderWeakQuiz(){
+    app.innerHTML='';
+    const wd=weakDeck();
+    if(wd.reason==='none'){
+      app.append(el('div',{class:'card center reveal',style:'padding:40px'},
+        el('div',{style:'font-size:40px'},'🎯'),
+        el('h3',{},'No weak questions yet'),
+        el('p',{class:'muted'},'Take a Practice Exam first. The questions you miss are collected here into a targeted quiz so you can drill exactly what you got wrong.'),
+        el('button',{class:'btn',onclick:()=>go('quizzes')},'Go to exams')
+      ));
+      return;
+    }
+    const n=Math.min(wd.ids.length,60);
+    const desc = wd.reason==='missed'
+      ? 'Built from the '+wd.ids.length+' question'+(wd.ids.length===1?'':'s')+' you have missed on recent exams — hardest first. Answer correctly and they drop out of your weak set.'
+      : 'No individually-missed questions are tracked yet, so this pulls from your weakest topics (below 70% mastery).';
+
+    const hero=el('div',{class:'card score-hero reveal'});
+    hero.append(el('div',{style:'font-size:40px'},'🎯'));
+    hero.append(el('div',{class:'verdict',style:'color:var(--burg)'},'Weak Quiz'));
+    hero.append(el('div',{class:'muted',style:'max-width:560px;margin:0 auto'}, desc));
+    hero.append(el('div',{class:'kpis'},
+      el('div',{class:'kpi'},el('b',{},n),el('span',{},'Questions')),
+      el('div',{class:'kpi'},el('b',{}, wd.reason==='missed'?'Missed':'Weak topics'),el('span',{},'Source'))
+    ));
+    hero.append(el('div',{style:'margin-top:18px'},
+      el('button',{class:'btn',onclick:startWeakQuiz},'▶ Start weak quiz')));
+    app.append(hero);
+
+    // preview the weak questions
+    const list=el('div',{class:'card reveal',style:'margin-top:16px'});
+    list.append(el('div',{class:'section-h'},'In this quiz'));
+    const qstats=LS.get('qstats',{});
+    wd.ids.slice(0,n).forEach((id,idx)=>{
+      const q=Q[id]; const s=qstats[q.q];
+      const tag = s ? ('missed '+s.wrong+'×') : q.topic;
+      list.append(el('div',{class:'bar-row',style:'grid-template-columns:30px 1fr auto'},
+        el('div',{class:'rank',style:'color:var(--muted);font-family:var(--display)'}, String(idx+1)),
+        el('div',{class:'nm',style:'color:var(--ink2)'}, q.q),
+        el('div',{}, el('span',{class:'badge fail'}, tag))
+      ));
+    });
+    app.append(list);
   }
 
   /* ===================== TAB: SCOREBOARD ===================== */
@@ -501,6 +582,7 @@
     LS.set('activeTab',tab);
     if(tab==='flash')renderFlash();
     else if(tab==='quizzes')renderQuizList();
+    else if(tab==='weakquiz')renderWeakQuiz();
     else if(tab==='scoreboard')renderScoreboard();
     else if(tab==='leaderboard')renderLeaderboard();
   }
