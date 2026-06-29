@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ServiceNow CAD — Flashcards & Practice Exams</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo">CAD</div>
+    <div class="title">
+      <h1>ServiceNow CAD Trainer</h1>
+      <p>Certified Application Developer — flashcards, exams & topic analytics</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="stat-pill">Questions <b id="stat-total">0</b></div>
+    <div class="stat-pill">Exams <b id="stat-taken">0/10</b></div>
+    <div class="stat-pill">Best <b id="stat-best">—</b></div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab" data-tab="flash" onclick="__go('flash')">🃏 Flashcards</button>
+    <button class="tab" data-tab="quizzes" onclick="__go('quizzes')">📝 Practice Exams</button>
+    <button class="tab" data-tab="scoreboard" onclick="__go('scoreboard')">📊 Scoreboard</button>
+  </nav>
+
+  <main id="app"></main>
+</div>
+
+<!-- question bank (each file pushes into window.ALL_QUESTIONS) -->
+<script>window.ALL_QUESTIONS=[];</script>
+<script src="data/q1.js"></script>
+<script src="data/q2.js"></script>
+<script src="data/q3.js"></script>
+<script src="data/q4.js"></script>
+<script src="data/q5.js"></script>
+<script src="data/q6.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
