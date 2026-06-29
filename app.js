@@ -126,7 +126,7 @@
   }
 
   /* ===================== TAB: FLASHCARDS ===================== */
-  let fcOrder=[], fcIdx=0, fcFlip=false, fcTopic='all';
+  let fcOrder=[], fcIdx=0, fcFlip=false, fcTopic='all', flashEl=null;
   function flashSet(){
     fcOrder = (fcTopic==='all'?Q:Q.filter(q=>q.topic===fcTopic)).map(q=>q._id);
     fcIdx=0;fcFlip=false;
@@ -151,7 +151,8 @@
 
     const q = Q[fcOrder[fcIdx]];
     const flash = el('div',{class:'flash'+(fcFlip?' flipped':'')});
-    const inner = el('div',{class:'flash-inner',onclick:()=>{fcFlip=!fcFlip;renderFlash();}});
+    flashEl = flash;
+    const inner = el('div',{class:'flash-inner',onclick:()=>{fcFlip=!fcFlip;flash.classList.toggle('flipped');}});
     const front = el('div',{class:'face front'},
       el('div',{class:'topic'},q.topic),
       el('div',{class:'qtext'},q.q),
@@ -458,20 +459,26 @@
     if(!fcOrder.length)return;
     if(e.key==='ArrowRight'){fcIdx=(fcIdx+1)%fcOrder.length;fcFlip=false;renderFlash();}
     else if(e.key==='ArrowLeft'){fcIdx=(fcIdx-1+fcOrder.length)%fcOrder.length;fcFlip=false;renderFlash();}
-    else if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();fcFlip=!fcFlip;renderFlash();}
+    else if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();fcFlip=!fcFlip;if(flashEl)flashEl.classList.toggle('flipped');}
   });
   $('#stat-player').addEventListener('click',changeName);
 
   /* ===================== BOOTSTRAP ===================== */
   async function bootstrap(){
-    // 1) load questions: DB first, fall back to bundled JS
+    // 1) load questions: DB first, then static questions.json, then bundled JS
     try{
       const dbq = await API.getQuestions();
       if(dbq && dbq.length){ Q = dbq.map((q,i)=>({...q,_id:i})); state.online=true; }
       else throw new Error('empty');
     }catch(e){
-      Q = (window.ALL_QUESTIONS||[]).map((q,i)=>({...q,_id:i}));
       state.online=false;
+      try{
+        const r = await fetch('data/questions.json',{headers:{accept:'application/json'}});
+        const arr = await r.json();
+        Q = arr.map((q,i)=>({...q,_id:i}));
+      }catch(e2){
+        Q = (window.ALL_QUESTIONS||[]).map((q,i)=>({...q,_id:i}));
+      }
     }
     TOPICS = [...new Set(Q.map(q=>q.topic))].sort();
     QUIZZES = buildQuizzes();
