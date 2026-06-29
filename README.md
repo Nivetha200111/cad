@@ -5,8 +5,8 @@ CAD-style scoreboard with topic analytics. 227 questions, no dependencies, no
 internet required at runtime. Scores persist in the browser (localStorage).
 
 ```
-cad-flashcards/
-├── index.html        # entry point
+.
+├── index.html        # entry point (repo root)
 ├── styles.css
 ├── app.js            # flashcard + quiz + scoreboard engine
 ├── data/q1..q6.js    # question bank
@@ -22,24 +22,19 @@ python3 -m http.server 4321
 
 ## Deploy to Vercel
 
-It's a pure static site — no build step.
+It's a pure static site at the repo root — **no build step, no settings needed.**
 
-### Option A — Vercel CLI (fastest)
+### Option A — Git + Vercel dashboard (recommended)
+1. In Vercel: **Add New → Project**, import this repo (`Nivetha200111/cad`).
+2. Leave **Root Directory = `./`**, Framework Preset = **Other**, Build Command empty.
+3. **Deploy**.
+
+### Option B — Vercel CLI
 ```bash
 npm i -g vercel        # if needed
-cd cad-flashcards
 vercel                 # preview deploy  (accept defaults)
 vercel --prod          # production deploy
 ```
-When asked for settings, accept defaults: **Framework Preset = Other**,
-**Build Command = (none)**, **Output Directory = ./**.
-
-### Option B — Git + Vercel dashboard
-1. Push this repo to GitHub/GitLab/Bitbucket.
-2. In Vercel: **Add New → Project**, import the repo.
-3. Set **Root Directory = `cad-flashcards`** (since the app lives in a subfolder).
-4. Framework Preset = **Other**, leave Build Command empty.
-5. **Deploy**.
 
 ### Option C — Drag & drop
-Zip the contents of `cad-flashcards/` and drop it on https://vercel.com/new.
+Zip the repo contents and drop them on https://vercel.com/new.
