@@ -127,8 +127,33 @@
 
   /* ===================== TAB: FLASHCARDS ===================== */
   let fcOrder=[], fcIdx=0, fcFlip=false, fcTopic='all', flashEl=null;
+
+  // Build a deck from your recent exam results: questions you missed first
+  // (most-missed, most-recent), else questions from your weakest topics.
+  function weakDeck(){
+    const qstats=LS.get('qstats',{});
+    const byText={}; Q.forEach(q=>byText[q.q]=q);
+    const missed=Object.entries(qstats)
+      .filter(([t,s])=>byText[t] && (s.lastWrong || s.wrong>0))
+      .sort((a,b)=>((b[1].wrong-b[1].right)-(a[1].wrong-a[1].right)) || (b[1].lastTs-a[1].lastTs))
+      .map(([t])=>byText[t]._id);
+    if(missed.length) return {ids:missed, reason:'missed'};
+    // fallback: weakest topics from saved exam scores
+    const scores=LS.get('quizScores',{}); const agg={};
+    Object.values(scores).forEach(s=>Object.entries(s.perTopic||{}).forEach(([t,v])=>{agg[t]=agg[t]||{c:0,t:0};agg[t].c+=v.c;agg[t].t+=v.t;}));
+    const weakTopics=Object.entries(agg).filter(([t,v])=>v.t&&v.c/v.t<0.7).sort((a,b)=>(a[1].c/a[1].t)-(b[1].c/b[1].t)).map(([t])=>t);
+    if(weakTopics.length) return {ids:Q.filter(q=>weakTopics.includes(q.topic)).map(q=>q._id), reason:'topics'};
+    return {ids:[], reason:'none'};
+  }
+  function hasResults(){ return Object.keys(LS.get('qstats',{})).length>0 || Object.keys(LS.get('quizScores',{})).length>0; }
+
   function flashSet(){
-    fcOrder = (fcTopic==='all'?Q:Q.filter(q=>q.topic===fcTopic)).map(q=>q._id);
+    if(fcTopic==='weak'){
+      const d=weakDeck();
+      fcOrder = d.ids.length? d.ids : Q.map(q=>q._id);
+    } else {
+      fcOrder = (fcTopic==='all'?Q:Q.filter(q=>q.topic===fcTopic)).map(q=>q._id);
+    }
     fcIdx=0;fcFlip=false;
   }
   function renderFlash(){
@@ -136,9 +161,13 @@
     app.innerHTML='';
     const ctrl = el('div',{class:'card',style:'margin-bottom:16px'},
       el('div',{class:'grid cols3'},
-        (()=>{const l=el('label',{class:'fld'},'Topic');
+        (()=>{const l=el('label',{class:'fld'},'Focus');
           const s=el('select',{onchange:e=>{fcTopic=e.target.value;flashSet();renderFlash();}});
-          s.append(el('option',{value:'all'},'All topics ('+Q.length+')'));
+          const wd=weakDeck();
+          const wopt=el('option',{value:'weak'},'★ My weak spots ('+wd.ids.length+')');
+          if(fcTopic==='weak')wopt.selected=true; s.append(wopt);
+          const aopt=el('option',{value:'all'},'All topics ('+Q.length+')');
+          if(fcTopic==='all')aopt.selected=true; s.append(aopt);
           TOPICS.forEach(t=>{const o=el('option',{value:t},t+' ('+Q.filter(q=>q.topic===t).length+')');if(t===fcTopic)o.selected=true;s.append(o);});
           l.append(s);return l;})(),
         el('label',{class:'fld'},'Shuffle',
@@ -148,6 +177,16 @@
       )
     );
     app.append(ctrl);
+
+    if(fcTopic==='weak'){
+      const wd=weakDeck();
+      let msg;
+      if(wd.reason==='missed') msg='Showing the questions you missed on recent exams — most-missed, most-recent first.';
+      else if(wd.reason==='topics') msg='No missed questions tracked yet — showing cards from your weakest topics (below 70% mastery).';
+      else msg='Take a Practice Exam and your weak spots will appear here. Showing all cards for now.';
+      app.append(el('div',{class:'card reveal',style:'margin-bottom:16px;padding:14px 18px'},
+        el('div',{class:'muted',style:'font-size:14px'}, '★ '+msg)));
+    }
 
     const q = Q[fcOrder[fcIdx]];
     const flash = el('div',{class:'flash'+(fcFlip?' flipped':'')});
@@ -280,15 +319,27 @@
   }
 
   function gradeRun(){
-    const ids=run.ids; let correct=0; const perTopic={};
+    const ids=run.ids; let correct=0; const perTopic={}; const results=[];
     ids.forEach((qid,k)=>{
       const q=Q[qid]; const a=run.answers[k]||[];
       const ok=a.length===q.correct.length && a.every(x=>q.correct.includes(x));
       perTopic[q.topic]=perTopic[q.topic]||{c:0,t:0};
       perTopic[q.topic].t++; if(ok){perTopic[q.topic].c++;correct++;}
+      results.push({q:q.q, topic:q.topic, ok});
     });
     const pct=Math.round(correct/ids.length*100);
-    return {pct,correct,total:ids.length,perTopic};
+    return {pct,correct,total:ids.length,perTopic,results};
+  }
+  // persist per-question history so flashcards can focus on what you miss
+  function recordQuestionStats(results){
+    const qstats=LS.get('qstats',{});
+    results.forEach(r=>{
+      const s=qstats[r.q]||{right:0,wrong:0,lastWrong:false,lastTs:0};
+      if(r.ok)s.right++; else s.wrong++;
+      s.lastWrong=!r.ok; s.lastTs=Date.now();
+      qstats[r.q]=s;
+    });
+    LS.set('qstats',qstats);
   }
   async function submitQuiz(){
     const unanswered=run.ids.length-Object.keys(run.answers).length;
@@ -298,6 +349,7 @@
     const scores=LS.get('quizScores',{});
     scores[run.quiz]={pct:g.pct,correct:g.correct,total:g.total,perTopic:g.perTopic,ts:Date.now()};
     LS.set('quizScores',scores);
+    recordQuestionStats(g.results);
     refreshHeader();
     showResult(run.quiz);
     // persist to cloud (best-effort)
@@ -486,6 +538,7 @@
     await ensurePlayer();
     refreshHeader();
     await syncFromCloud();
+    if(hasResults()) fcTopic='weak';   // flashcards default to your weak spots
     go(LS.get('activeTab','flash'));
   }
   bootstrap();
