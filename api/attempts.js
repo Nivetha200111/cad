@@ -15,8 +15,8 @@ module.exports = async (req, res) => {
       const player = String(b.player || '').trim().slice(0, 80);
       if (!player) return res.status(400).json({ error: 'player required' });
       const { rows } = await sql`
-        INSERT INTO attempts (player, quiz, pct, correct, total, per_topic)
-        VALUES (${player}, ${b.quiz | 0}, ${b.pct | 0}, ${b.correct | 0}, ${b.total | 0}, ${JSON.stringify(b.perTopic || {})})
+        INSERT INTO attempts (player, quiz, pct, correct, total, per_topic, missed)
+        VALUES (${player}, ${b.quiz | 0}, ${b.pct | 0}, ${b.correct | 0}, ${b.total | 0}, ${JSON.stringify(b.perTopic || {})}, ${JSON.stringify(b.missed || [])})
         RETURNING id, created_at`;
       return res.status(201).json({ ok: true, id: rows[0].id, created_at: rows[0].created_at });
     }
@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
       const player = String((req.query && req.query.player) || '').trim();
       if (player) {
         const { rows } = await sql`
-          SELECT id, quiz, pct, correct, total, per_topic, created_at
+          SELECT id, quiz, pct, correct, total, per_topic, missed, created_at
           FROM attempts WHERE player = ${player}
           ORDER BY created_at DESC LIMIT 300`;
         return res.status(200).json({ attempts: rows });

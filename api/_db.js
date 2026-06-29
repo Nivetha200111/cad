@@ -36,6 +36,7 @@ async function init() {
     created_at TIMESTAMPTZ DEFAULT now()
   )`;
   await sql`CREATE INDEX IF NOT EXISTS idx_attempts_player ON attempts (player)`;
+  await sql`ALTER TABLE attempts ADD COLUMN IF NOT EXISTS missed JSONB DEFAULT '[]'::jsonb`;
 
   const { rows } = await sql`SELECT COUNT(*)::int AS n FROM questions`;
   if (rows[0].n === 0) {

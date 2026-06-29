@@ -113,14 +113,25 @@
     try{
       const attempts = await API.getAttempts(state.player);
       const scores = LS.get('quizScores',{});
+      const qstats = LS.get('qstats',{});
       // keep the best attempt per quiz across local + cloud
       attempts.forEach(a=>{
         const cur=scores[a.quiz];
         if(!cur || a.pct>cur.pct){
           scores[a.quiz]={pct:a.pct,correct:a.correct,total:a.total,perTopic:a.per_topic||{},ts:new Date(a.created_at).getTime()};
         }
+        // rebuild per-question misses from the cloud (without resurrecting ones
+        // you've since answered correctly locally)
+        const ts=new Date(a.created_at).getTime();
+        (a.missed||[]).forEach(m=>{
+          const key=(m&&m.q)||m; if(!key) return;
+          const s=qstats[key];
+          if(!s){ qstats[key]={right:0,wrong:1,lastWrong:true,lastTs:ts}; }
+          else if(ts>(s.lastTs||0)){ s.wrong=(s.wrong||0)+1; s.lastWrong=true; s.lastTs=ts; }
+        });
       });
       LS.set('quizScores',scores);
+      LS.set('qstats',qstats);
       refreshHeader();
     }catch(e){ /* ignore */ }
   }
@@ -138,11 +149,15 @@
       .sort((a,b)=>(b[1].wrong-a[1].wrong) || (b[1].lastTs-a[1].lastTs))
       .map(([t])=>byText[t]._id);
     if(missed.length) return {ids:missed, reason:'missed'};
-    // fallback: weakest topics from saved exam scores
+    // fallback: weakest topics from saved exam scores (per-topic mastery)
     const scores=LS.get('quizScores',{}); const agg={};
     Object.values(scores).forEach(s=>Object.entries(s.perTopic||{}).forEach(([t,v])=>{agg[t]=agg[t]||{c:0,t:0};agg[t].c+=v.c;agg[t].t+=v.t;}));
-    const weakTopics=Object.entries(agg).filter(([t,v])=>v.t&&v.c/v.t<0.7).sort((a,b)=>(a[1].c/a[1].t)-(b[1].c/b[1].t)).map(([t])=>t);
-    if(weakTopics.length) return {ids:Q.filter(q=>weakTopics.includes(q.topic)).map(q=>q._id), reason:'topics'};
+    const ranked=Object.entries(agg).map(([t,v])=>[t, v.c/v.t]).sort((a,b)=>a[1]-b[1]);
+    if(ranked.length){
+      let weak=ranked.filter(([t,m])=>m<0.99).map(([t])=>t);   // anything under 99% is weak
+      if(!weak.length) weak=ranked.slice(0,3).map(([t])=>t);   // all ≥99%: drill the lowest few anyway
+      if(weak.length) return {ids:Q.filter(q=>weak.includes(q.topic)).map(q=>q._id), reason:'topics', topics:weak};
+    }
     return {ids:[], reason:'none'};
   }
   function hasResults(){ return Object.keys(LS.get('qstats',{})).length>0 || Object.keys(LS.get('quizScores',{})).length>0; }
@@ -182,7 +197,7 @@
       const wd=weakDeck();
       let msg;
       if(wd.reason==='missed') msg='Showing the questions you missed on recent exams — most-missed, most-recent first.';
-      else if(wd.reason==='topics') msg='No missed questions tracked yet — showing cards from your weakest topics (below 70% mastery).';
+      else if(wd.reason==='topics') msg='Showing cards from your weakest topics (under 99% mastery): '+(wd.topics||[]).join(', ')+'.';
       else msg='Take a Practice Exam and your weak spots will appear here. Showing all cards for now.';
       app.append(el('div',{class:'card reveal',style:'margin-bottom:16px;padding:14px 18px'},
         el('div',{class:'muted',style:'font-size:14px'}, '★ '+msg)));
@@ -360,7 +375,8 @@
     LS.set('quizScores',scores);
     showResult(run.quiz);
     if(state.online && state.player){
-      API.saveAttempt({player:state.player,quiz:run.quiz,pct:g.pct,correct:g.correct,total:g.total,perTopic:g.perTopic})
+      const missed=g.results.filter(r=>!r.ok).map(r=>({q:r.q,topic:r.topic}));
+      API.saveAttempt({player:state.player,quiz:run.quiz,pct:g.pct,correct:g.correct,total:g.total,perTopic:g.perTopic,missed})
         .catch(()=>{});
     }
   }
@@ -426,7 +442,9 @@
   function startWeakQuiz(){
     const wd=weakDeck();
     if(!wd.ids.length){ go('weakquiz'); return; }
-    const ids=wd.ids.slice(0,60);
+    let ids=wd.ids;
+    if(wd.reason==='topics') ids=shuffle(ids, Date.now()&0xffffff); // variety for topic drills
+    ids=ids.slice(0,60);
     run={ mode:'weak', quiz:'weak', ids, pos:0, answers:{}, submitted:false };
     renderQuiz();
   }
@@ -445,7 +463,7 @@
     const n=Math.min(wd.ids.length,60);
     const desc = wd.reason==='missed'
       ? 'Built from the '+wd.ids.length+' question'+(wd.ids.length===1?'':'s')+' you have missed on recent exams — hardest first. Answer correctly and they drop out of your weak set.'
-      : 'No individually-missed questions are tracked yet, so this pulls from your weakest topics (below 70% mastery).';
+      : 'No individually-missed questions are tracked yet, so this drills your weakest topics (under 99% mastery): '+(wd.topics||[]).join(', ')+'.';
 
     const hero=el('div',{class:'card score-hero reveal'});
     hero.append(el('div',{style:'font-size:40px'},'🎯'));
