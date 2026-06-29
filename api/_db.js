@@ -1,5 +1,17 @@
 // Shared DB helper: lazy table creation + one-shot question seeding.
 // Files prefixed with "_" are not exposed as routes by Vercel.
+
+// @vercel/postgres expects POSTGRES_URL. Vercel's Neon integration sometimes
+// only sets DATABASE_URL (or the *_NON_POOLING / *_PRISMA_URL variants), so map
+// whichever exists before the client initializes.
+if (!process.env.POSTGRES_URL) {
+  const cs = process.env.POSTGRES_PRISMA_URL
+    || process.env.DATABASE_URL
+    || process.env.POSTGRES_URL_NON_POOLING
+    || process.env.DATABASE_URL_UNPOOLED;
+  if (cs) process.env.POSTGRES_URL = cs;
+}
+
 const { sql } = require('@vercel/postgres');
 const seed = require('./_seed.json');
 
