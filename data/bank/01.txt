@@ -1,0 +1,796 @@
+[[Q]]
+topic: Scripting & APIs
+question: Which one of the following is NOT a GlideUser (g_user) method?
+- getFullName()
+*- userName
+- hasRole()
+- hasRoleExactly()
+>>>
+Source: Developer
+
+The correct answer is "userName."
+
+Explanation:
+The GlideUser (g_user) API provides various methods to access information about the current user and their roles in client-side scripts. However, "userName" is not a method; it is a property of the GlideUser object. The property "userName" holds the username of the current user, but it is not invoked as a method.
+
+Methods typically end with parentheses, like hasRole() or getFullName(), and are functions that perform actions or return values. Properties, on the other hand, are variables that hold data but do not perform actions.
+
+Here are some of the actual methods in GlideUser:
+* hasRole(): Checks if the user has a specific role.
+* getFullName(): Returns the full name of the user.
+* hasRoleExactly(): Checks if the user has exactly the specified role.
+
+How to Remember:
+Think of methods as actions and properties as characteristics. Methods do something; properties are something. In the context of GlideUser, "userName" is a characteristic of the user, not an action performed on or by the user. Therefore, it's a property, not a method. Remember it as "userName is who you are, not what you do."
+<<<
+
+[[Q]]
+topic: Guided App Creator
+question: What UX (user experience) options are available in Guided Application Creator? (Select 2)
+- Tablet
+*- Workspace
+*- Mobile
+- Classic
+- Desktop
+>>>
+Source: Documentation
+
+Correct answers:
+
+Mobile: This is a correct answer. The Guided Application Creator in ServiceNow allows you to design applications for mobile user experiences.
+
+Classic: This is also a correct answer. The "Classic" option refers to the traditional ServiceNow browser-based interface.
+
+Incorrect answers:
+
+Workspace: While ServiceNow does have a "Workspace" experience, it's not a specific UX option in the context of the Guided Application Creator.
+
+Desktop: This is not a specific UX option in the Guided Application Creator. The "Classic" option typically covers the desktop browser experience.
+
+Tablet: This is not a distinct UX option in the Guided Application Creator. Mobile designs in ServiceNow are typically responsive and can adapt to various screen sizes, including tablets.
+<<<
+
+[[Q]]
+topic: Reporting
+question: Which of the following can be used to place a report on a Homepage?
+- Gadget
+- Tag
+- Catalog
+*- Gauge
+>>>
+Source: Documentation
+
+The correct answer is "Gauge."
+
+Incorrect answers:
+
+* "Catalog": This is not used for placing a report on a homepage.
+* "Gadget": This is not the correct term used for placing a report on a homepage in ServiceNow.
+* "Tag": This is not used for placing a report on a homepage.
+
+How to remember:
+
+Think of the phrase "Gauge the Homepage" to remember that a Gauge can be used to place a report on a homepage. The word "Gauge" is often associated with measurement or display, which is what you're doing when you add a report to a homepage. You're essentially measuring or displaying specific data, making "Gauge" the logical choice for this function.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Which roles grant access to source control repository operations such as importing applications from source control, or linking an application to source control?
+*- source_control
+*- admin
+- source_control_admin
+- git_admin
+>>>
+Source: Documentation
+
+Correct answers:
+
+admin: Think of the "admin" as the master key holder in ServiceNow. Just like in a building where the administrator has keys to every room, the "admin" role in ServiceNow has access to virtually everything, including source control repository operations. Remember it as the "all-access pass."
+
+source_control: The name itself is quite indicative. "Source" refers to the source code, and "control" refers to managing or overseeing it. So, the "source_control" role is specifically tailored for overseeing and managing source code operations in ServiceNow. Think of it as the "code manager" role.
+
+Incorrect answers:
+
+source_control_admin: To remember that this isn't a standard role, think of ServiceNow roles as being more generalized rather than overly specific. While "admin" and "source_control" are broad categories, "source_control_admin" sounds like a hybrid, which isn't standard in ServiceNow's role naming convention.
+
+git_admin: Git is a popular version control system, but ServiceNow doesn't have a role named specifically after it. To remember this, think of ServiceNow roles as being platform-centric rather than tool-centric. So, while Git might be used, there isn't a direct "git_admin" role for it in ServiceNow.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which of the following are steps in the generalized process for working with events? (Select 3)
+- Create a Scheduled Script Execution
+*- Add an event to the Event Registry
+*- Respond to the event
+*- Generate the event
+- Write a Business Rule
+>>>
+Source: Developer
+
+The generalized process to work with events is:
+
+1. Add event to the Event Registry (not needed if you generate an already registered event).
+2. Generate the event.
+3. Respond to the event.
+
+Correct answers:
+
+Respond to the event: One of the key steps in working with events in ServiceNow is to respond to the event, often through an Event Script or a Business Rule that is triggered by the event.
+
+Add an event to the Event Registry: Before you can generate or respond to an event, it must be added to the Event Registry in ServiceNow. This defines the event and allows the system to recognize it.
+
+Generate the event: Generating the event is a crucial step in the process. This is often done within a Business Rule, Workflow, or other script to signal that a particular condition has been met or an action has taken place.
+
+Incorrect answers:
+
+Write a Business Rule: While Business Rules often generate or respond to events, writing a Business Rule is not a step specific to the generalized process for working with events. Business Rules can do many things beyond just working with events.
+
+Create a Scheduled Script Execution: Scheduled Script Executions (Scheduled Jobs) are not specifically part of the generalized process for working with events, although they could potentially generate or respond to events as part of their logic.
+<<<
+
+[[Q]]
+topic: User Interface
+question: In Form Designer, when you edit the label of a field on a child table, the label is updated on?
+- All tables
+- Base table
+- Parent table
+*- Child table
+>>>
+Source: Community
+
+Correct answer:
+
+When you edit the label of a field on a child table in Form Designer, the label is updated only on the child table itself. This means that any changes made to the label of a field in the child table will not reflect on the parent table or any other related tables.
+
+Incorrect answers:
+
+* Parent table: The label on the parent table is not affected.
+* All tables: The label is not updated on all tables, just the child table.
+* Base table: The label is not updated on the base table.
+
+How to remember:
+
+Think of the child table as a "self-contained unit" that doesn't impose its changes on its parent or siblings. In other words, when a child table decides to "rename" a field (change its label), that change is specific to the child table itself and doesn't propagate upwards or sideways to parent or sibling tables.
+<<<
+
+[[Q]]
+topic: Debugging & Testing
+question: Which method is used in emulating mobile for testing?
+- $mobile.do
+- $tablet.do
+*- $m.do
+- $t.do
+>>>
+Source: Community
+
+Correct answer: is $m.do.
+
+Incorrect answers:
+
+* $tablet.do: This is incorrect as it suggests tablet emulation, not mobile.
+* $mobile.do: This might seem like a logical choice, but the correct method for emulating mobile for testing in ServiceNow is $m.do.
+* $t.do: This is not a method used for mobile emulation in ServiceNow.
+
+How to remember:
+
+Think of the phrase "Mobile Emulation = M, Do it!" to remember that $m.do is the method used for mobile emulation. The "M" stands for mobile, and "do" signifies the action of emulating it for testing.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: The getCurrentDomainID() method is part of which scoped class?
+*- Scoped GlideSession
+- ScopedDCManager
+- Scoped Domain
+- GlideRecord
+>>>
+Source: Documentation
+
+ScopedSessionDomain - getCurrentDomainID()
+Returns the sys_id of the current domain for the logged-in user session.
+
+Correct answers:
+
+The getCurrentDomainID() method is part of the Scoped GlideSession class.
+
+Incorrect answers:
+
+* GlideRecord: This class is used for database operations, not for domain information.
+* Scoped Domain: This is not a class that exists for scoped applications.
+* ScopedDCManager: This is also not a class that exists for scoped applications.
+
+How to remember:
+You can remember this by associating "Domain" with "Session," as in, "Which domain is the current session operating in?" The word "Scoped" also hints that this is specific to scoped applications. So, put it all together, and you get Scoped GlideSession.
+<<<
+
+[[Q]]
+topic: Guided App Creator
+question: Which role is required to access Guided Application Creator?
+*- sn_g_app_creator.app_creator
+- sn_developer.app_creator
+- sn_app_creator.app_creator
+- sn_gac.app_creator
+>>>
+Source: Developer
+
+Correct answer:
+
+sn_g_app_creator.app_creator: The role "sn_g_app_creator.app_creator" is required to access the Guided Application Creator in ServiceNow. This role grants the necessary permissions to use the features of the Guided Application Creator.
+
+How to remember?
+
+To remember which role is needed to access the Guided Application Creator in ServiceNow, think of it this way:
+
+The role starts with "sn" for ServiceNow, followed by "g" for "Guided," then "app_creator" for "Application Creator." Put it all together, and you get "sn_g_app_creator.app_creator."
+
+Incorrect answers:
+
+sn_developer.app_creator: This is not the correct role for accessing the Guided Application Creator in ServiceNow.
+
+sn_app_creator.app_creator: This is also not the correct role for accessing the Guided Application Creator.
+
+sn_gac.app_creator: This is not the correct naming convention for the role required to access the Guided Application Creator.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Identify the way(s) an application can respond to an Event generated by the gs.eventQueue() method. (Select 2)
+- UI Policy
+*- Script Action
+- Scheduled Job
+*- Email Notification
+>>>
+Source: Developer
+
+Correct answers:
+
+* Email Notification: Events can trigger Email Notifications, as mentioned in the "Responding to Events" section.
+
+* Script Action: These are event handlers that contain server-side script logic. They execute in response to events and can be created in Studio. They have access to the event and current objects and can be configured to run based on conditions.
+
+Incorrect answer:
+
+* UI Policy: This is not mentioned as a way to respond to events generated by the gs.eventQueue() method in the provided information.
+
+* Scheduled Job: This is also not mentioned in the provided information as a way to respond to such events.
+
+How to remember:
+Since the focus is on Script Actions and Email Notifications, you can remember the acronym "SE":
+
+* S for Script Action
+* E for Email Notification
+Think of "SE" as "Scripted Events" to help you remember that these are the ways to respond to server-side events in ServiceNow, according to the provided module.
+<<<
+
+[[Q]]
+topic: Guided App Creator
+question: When creating an application via Guided Application Creator, which of the following is NOT a user experience option? (Select 2)
+*- Portal
+- Mobile
+- Classic
+*- Workplace
+>>>
+Source: Documentation
+
+Correct answers:
+
+Workplace: This is a correct answer. "Workplace" is not a user experience option in the Guided Application Creator in ServiceNow.
+
+Portal: This is also a correct answer. While ServiceNow does have Service Portals, the term "Portal" is not a specific user experience option in the context of the Guided Application Creator.
+
+Incorrect answers:
+
+Classic: This is an incorrect answer. The "Classic" option refers to the traditional ServiceNow browser-based interface and is a user experience option in the Guided Application Creator.
+
+Mobile: This is an incorrect answer. The Guided Application Creator in ServiceNow allows you to design applications for mobile user experiences.
+<<<
+
+[[Q]]
+topic: User Interface
+question: Which of the following is NOT a type of annotation?
+- Section Separator
+- Info Box Red
+*- Info Box Yellow
+- Text
+- Section Details
+- Line Separator
+>>>
+Source: Documentation
+
+"In Annotation Details, select the type of annotation. The available types of annotations include Info Box Blue, Info Box Red, Line Separator (any text you add appears beneath the line), Section Details, Section Separator, and Text."
+
+Correct answer:
+
+* Info Box Blue
+* Info Box Red
+* Line Separator
+* Section Details
+* Section Separator
+* Text
+
+Incorrect answer:
+
+* Info Box Yellow: This type doesn't exist in ServiceNow.
+
+How to remember:
+
+Just simply remember that Info Box Yellow is an incorrect answer.
+
+or
+
+To remember the correct types of annotations, you can use the acronym "BLiSTeRS":
+
+* B for Info Box Blue
+* L for Line Separator
+* S for Section Separator
+* T for Text
+* e for Section Details
+* R for Info Box Red
+
+Think of "BLiSTeRS" as something that stands out, just like how annotations stand out on a form to highlight important elements. This way, you'll remember that "Info Box Yellow" is not a part of the standard annotation types, as it doesn't fit into the "BLiSTeRS" acronym.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which method is used to retrieve a system property?
+*- gs.getProperty()
+- gs.getAppProperty()
+- g_form.getAppProperty()
+- g_form.getProperty()
+>>>
+Source: Developer
+
+The correct answer is gs.getProperty().
+
+Incorrect answers:
+
+* gs.getAppProperty(): This is not the correct method for retrieving system properties.
+* g_form.getAppProperty(): This is not a method used for retrieving system properties.
+* g_form.getProperty(): This is not a method used for retrieving system properties.
+
+How to remember:
+
+The gs in gs.getProperty() stands for GlideSystem, which is the class that provides methods for retrieving system properties. The method name itself, getProperty, is quite straightforward: it's used to "get" a "property."
+
+Mnemonic: "Get System Property = gs.getProperty()". The initials G and S can help you remember GlideSystem, and 'get' and 'property' are self-explanatory.
+
+Based on the documentation, gs.getProperty() is the method used to retrieve Application Property values in any server-side script. It can also accept a second parameter, which specifies the value to use if the Application Property has no value. This makes it a versatile and commonly used method in ServiceNow scripting.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: Which of the following is NOT a type of authentication used by REST APIs? (Select 2)
+*- CIM
+- OAuth 2.0
+- Basic Auth
+- Mutual authentication using protocol profiles
+*- JDBC
+>>>
+Source: Developer
+
+The correct answers are "CIM" and "JDBC."
+
+Incorrect answers:
+
+* "OAuth 2.0": This is a commonly used authentication method for REST APIs that allows for token-based authentication.
+* "Basic Auth": This is another commonly used authentication method for REST APIs that involves sending a username and password with each request.
+* "Mutual authentication using protocol profiles": This is a more advanced form of authentication that involves both the client and server authenticating each other.
+
+How to remember:
+
+CIM and JDBC are not specifically designed for REST API authentication. CIM (Common Information Model) is a standard for representing management information in an enterprise environment, while JDBC (Java Database Connectivity) is a Java-based API for connecting to relational databases. Neither of these are authentication methods for REST APIs.
+
+To remember this, think of CIM and JDBC as "Cousins In Management" and "Java's Database Connector," respectively. They are like distant relatives who don't belong at the REST API "authentication party." They have their own roles in other types of systems and are not used for authenticating REST APIs.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: How can a developer extract data from the response body after calling a REST web service? (Select 2)
+- Click the Convert Response Body button to convert the response.
+- Use the Convert Response Body wizard to translate the response into an object
+*- Use the XMLDocument2 API to extract data from XML formatted responses
+*- Use the JSON API to convert JSON formatted responses to a JavaScript object
+- Use the XMLDocument2 Script Include to parse the XML.
+>>>
+Source: Developer
+
+JSON
+When working with a json response, use the JSON API, which converts a JSON formatted string to a JavaScript object.
+XML
+When working with an XML response in privately-scoped applications, use the XMLDocument2 API to extract data from the response body.
+
+Correct answers:
+
+Use the JSON API to convert JSON formatted responses to a JavaScript object: This is a correct answer. When a developer receives a JSON formatted response from a REST web service, they can use the JSON API in ServiceNow to parse the response and convert it into a JavaScript object for further processing.
+
+Use the XMLDocument2 API to extract data from XML formatted responses: This is also a correct answer. If the response from a REST web service is in XML format, a developer can use the XMLDocument2 API in ServiceNow to parse and extract data from the response.
+
+Incorrect answers:
+
+Use the Convert Response Body wizard to translate the response into an object: There's no "Convert Response Body wizard" in ServiceNow for this purpose.
+
+Click the Convert Response Body button to convert the response: This is not a standard method in ServiceNow for extracting data from a REST web service response.
+
+Use the XMLDocument2 Script Include to parse the XML: This is misleading. While XMLDocument2 is an API for parsing XML, it's not specifically a "Script Include." The correct way to refer to it is the "XMLDocument2 API."
+<<<
+
+[[Q]]
+topic: Application Automation
+question: You are writing an Async Business Rule for a table in a different scope than the Business Rule record. Which one of the following database operations CANNOT be part of the Async Business Rule's configuration?
+- Update
+- Delete
+- Insert
+*- Query
+>>>
+Source: Documentation
+
+"For tables that are in a different scope than the business rule record, the types of rules are limited.
+
+* You can create a rule where When is async with any of the following options:
+   * Insert, Update, and Delete database operations. You cannot select Query.
+   * Set field values actions and scripts (the Script field)."
+
+Correct answer:
+
+is that you cannot perform a "Query" operation in an Async Business Rule for a table in a different scope than the Business Rule record.
+
+Incorrect answers:
+
+* Update: You can perform an update operation.
+* Insert: You can perform an insert operation.
+* Delete: You can perform a delete operation.
+
+How to remember:
+Think of Async Business Rules as actions that are triggered after a change has already been committed to the database. They are not designed to query the database but rather to act upon changes that have already occurred.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Application files in a ServiceNow application are:
+- XML exports of an application export set
+*- Artifacts comprising the ServiceNow application
+- An xml export of the applications table records
+- csv files containing data imported into an application
+>>>
+Source: Documentation
+
+The correct answer is "Artifacts comprising the ServiceNow application."
+
+Why?
+
+Application files in a ServiceNow application are artifacts comprising the ServiceNow application. These files are configuration records that developers create to extend application functionality, including application logic such as business rules, workflows, and script includes. The Application File [sys_metadata] table is the parent table for all tables that contain these configuration records, and it defines the standard fields for a configuration record. These tables extend the Application File table, and the system tracks these application files in Update Sets to ensure synchronization across different instances.
+
+Incorrect answers:
+
+* "csv files containing data imported into an application": While CSV files can be used to import data, they are not considered application files in the context of ServiceNow.
+* "XML exports of an application export set": These are exports, not the application files that make up the application's functionality.
+* "An xml export of the applications table records": Again, these are exports and not the actual application files that define an application's behavior.
+
+How to remember:
+
+Think of application files as the "building blocks" or "artifacts" that make up a ServiceNow application. These are the configuration records like business rules, workflows, and script includes that define how an application functions. Just like a building is made up of bricks, steel, and glass, a ServiceNow application is made up of these "artifacts" or application files.
+<<<
+
+[[Q]]
+topic: Debugging & Testing
+question: When debugging a script a developer can log breakpoints or conditional log points to log messages to the console at specific lines, and remove log points when they are done debugging them. Which system property must be set to true to enable log points?
+- glide.debugger.log.ui
+*- glide.debug.log_point
+- glide.ui.js_can_debug
+- com.glide.index_suggestion.debug
+>>>
+Source: Documentation
+
+"Before you begin
+
+* Set the glide.debug.log_point system property to true. See Available system properties for more information.
+* Role required: admin or script_debugger"
+
+Based on the provided information, the system property that must be set to true to enable log points is glide.debug.log_point.
+
+How to remember:
+
+To remember the correct system property, think of it as a straightforward description of what you're doing: you're setting a "log point" for debugging. The system property is glide.debug.log_point.
+
+You can associate it with the task at hand: "Debugging? I need a log point. So, it's glide.debug.log_point."
+
+Think of it as a sentence: "For glide (ServiceNow), I need to debug using a log point." This way, you'll remember that the system property directly relates to enabling "log points" for debugging.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: While debugging security rules, what does the blue color code indicate?
+- Failed
+- Access granted
+- Access denied
+*- Indicates the ACL is already in the cache and does not need to be re-evaluated
+- Passed
+>>>
+Source: Documentation
+
+The correct answer:
+
+is "Indicates the ACL is already in the cache and does not need to be re-evaluated."
+
+Incorrect answers:
+
+* "Access granted": While a green color might indicate access is granted, blue specifically indicates that the ACL is cached.
+* "Access denied": This would typically be indicated by a different color, not blue.
+* "Failed": Again, a different color would indicate a failure.
+* "Passed": While passing might be indicated by a color like green, blue is specifically for cached ACLs.
+
+How to remember:
+
+Think of the blue color as a "blueprint" that's already been reviewed and approved. Just like a blueprint doesn't need to be re-evaluated once it's been approved, a blue-colored ACL indicates that it's already in the cache and doesn't need to be re-evaluated. This can help you remember that blue in this context stands for something that's already been checked and stored for quick access.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Which of the following statements is true for managing applications purchased from the Store?
+- Applications that belong to other organizations can be changed.
+- There are separate entitlements for application-customizations.
+*- Customizations cannot revert back to the base system application.
+- Applications that belong to other organizations can be customized.
+>>>
+Source: Documentation
+
+Correct answer:
+
+"Customizations cannot revert back to the base system application."
+
+Incorrect answers:
+
+* There are separate entitlements for application-customizations: This is incorrect because the entitlements for customizations are controlled by the entitlements of the respective store or vendor-released application.
+
+* Applications that belong to other organizations can be customized: This is incorrect because you cannot change the actual applications that belong to other organizations.
+
+* Applications that belong to other organizations can be changed: This is incorrect for the same reason as above; you can't change applications that belong to other organizations.
+
+How to remember:
+
+Think of the phrase "Once you customize, you can't go back to base." This will help you remember that once you've customized an application purchased from the Store, you can't revert those customizations back to the base system application.
+
+Based on the documentation, you can manage your company's customizations for applications purchased from the Store, but these customizations are tied to the entitlements of the original application. You can't revert these customizations back to the base system application, making it a one-way process. Therefore, it's crucial to be cautious when customizing applications from the Store.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which objects can be used in Inbound Action scripts?
+*- current and email
+- current and producer
+- previous and event
+- current and previous
+>>>
+Source: Documentation
+
+Correct Answer
+current and email — In ServiceNow Inbound Actions, the script has access to two primary objects:
+
+* current: This represents the target record (such as an Incident, Change Request, or Case) being created or updated by the email.
+* email: This represents the incoming email itself. It allows you to extract data like the sender's address (email.origemail), the subject line (email.subject), or the body text (email.body_text).
+
+Incorrect Answers
+current and producer
+* Why it's wrong: The producer object is specific to Record Producers in the Service Catalog. It is used to map variables from a front-end form to a record. Inbound Actions use the email object instead to map data from a sent message.
+
+current and previous
+* Why it's wrong: The previous object is used in Business Rules to compare a record's values before and after an update. Since an Inbound Action is triggered by an external email and not a database update of an existing record's state, previous is not available in this context.
+
+previous and event
+* Why it's wrong: As noted above, previous is not supported here. While the event object is used in Script Actions or to process events from the Event Queue, it is not a globally available object within the Inbound Action script itself.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: Which of the following must evaluate to true to grant a user access to an application table record? a) Conditions configured in the access controls must evaluate to true b) Scripts configured in the access control must evaluate to true c) The user has one of the roles specified in the required roles related list d) Other matching access controls for the records evaluate to true
+*- a, b, c
+- a and c
+- a and b
+- a, b, c and d
+>>>
+Source: Documentation
+
+Based on the provided options, the correct combination is:
+
+a, b, c: These are the correct conditions that must evaluate to true to grant a user access to an application table's record in ServiceNow.
+
+Correct answers:
+
+a) Conditions configured in the access controls must evaluate to true: This is correct. Access controls in ServiceNow often have conditions that determine whether access should be granted based on the current state or values of a record.
+
+b) Scripts configured in the access control must evaluate to true: This is also correct. Access controls can have scripts that contain more complex logic to determine access. If the script returns false, access is denied.
+
+c) The user has one of the roles specified in the required roles related list: This is correct. Roles are a fundamental part of ServiceNow's security and access control system. If a user doesn't have the required role specified in an access control, they won't be granted access.
+
+Incorrect answers:
+
+d) Other matching access controls for the records evaluate to true: This is not a strict requirement. While other matching access controls can influence the overall access decision, they don't necessarily have to evaluate to true for a user to be granted access. Each access control is evaluated independently.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: Which protects applications by identifying and restricting access to application files and data?
+- ACLs
+- Roles
+*- Application Scope
+>>>
+Source: Documentation
+
+The correct answer is "Application Scope."
+
+Explanation:
+
+Application scope in ServiceNow is designed to protect applications by identifying and restricting access to their files and data. When an application is developed within a specific scope, it ensures that the application's tables, business logic, and other components are isolated from other applications. This isolation is crucial for maintaining the integrity of the application and preventing unintended interactions with other applications.
+
+For instance, if you develop a conference room booking application in its own scope, that application can freely interact with its own tables and business logic. However, other applications will not be able to access or modify this data unless explicit permission is granted. This ensures both the stability of the conference room booking application and the overall system.
+
+How to Remember:
+
+Think of "Application Scope" as a protective bubble around your application. Just like how a bubble encloses air and separates it from the outside environment, an application scope encloses an application's files and data, keeping them safe from external interference. This way, you can easily recall that Application Scope is the feature that protects applications by restricting access to their internal components.
+<<<
+
+[[Q]]
+topic: Guided App Creator
+question: What is the name of the Guided Application Creator plugin?
+- glide.sn-guided-app-creator
+- com.glide.guided-app-creator
+- com.glide.sn-guided-creator-app
+*- com.glide.sn-guided-app-creator
+>>>
+Source: Documentation
+
+"Guided Application Creator is enabled via the Guided Application Creator (com.glide.sn-guided-app-creator) plugin, which is active by default in the Now Platform."
+
+Correct answer:
+
+com.glide.sn-guided-app-creator: This is the correct answer. In ServiceNow, plugins often follow the "com.glide" naming convention, and the guided application creator plugin is named "com.glide.sn-guided-app-creator".
+
+Incorrect answers:
+
+com.glide.guided-app-creator: This is not the correct naming convention for the guided application creator plugin in ServiceNow.
+glide.sn-guided-app-creator: This does not follow the typical naming convention for plugins in ServiceNow.
+com.glide.sn-guided-creator-app: The order of the terms in this option is incorrect.
+
+How to Remember?
+com.glide.sn-guided-app-creator: Think of ServiceNow plugins as a series of organized bookshelves. The "com" is the main shelf, "glide" is a specific section on that shelf, and "sn-guided-app-creator" is the exact book you're looking for. Just as you'd follow a sequence to find a book in a library, ServiceNow plugins have a specific naming sequence. Remember, it starts broad with "com", gets more specific with "glide", and then pinpoints the exact feature with "sn-guided-app-creator". Always ensure the terms are in the right order and format.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: In a business rule which of the following returns the sys_id of the current logged in user?
+*- gs.getUserID()
+- g_form.getUserSysID()
+- gs.getUserSysID()
+- g_form.getUserID()
+>>>
+Source: Developer
+
+gs.getUserID(): This is the correct answer. In ServiceNow, the gs.getUserID() method returns the sys_id of the currently logged-in user when used in a business rule.
+
+Incorrect Answers:
+
+g_form.getUserSysID(): This is not a valid method in ServiceNow. The g_form object is used for client-side scripting, and there isn't a method named getUserSysID() associated with it.
+g_form.getUserID(): This is also not a valid method. Again, the g_form object is for client-side scripting, and it doesn't have a method named getUserID().
+gs.getUserSysID(): This is not a standard method in ServiceNow. The correct method to get the sys_id of the current user in a business rule is gs.getUserID().
+
+How to Remember?
+Think of gs as "global server" methods, which are used in server-side scripting. The term "user ID" directly relates to the sys_id of the user. So, gs.getUserID() is like asking the server, "Hey, give me the ID of the current user!" On the other hand, g_form methods are more about form operations and not about fetching user details.
+
+Example: The following shows how to unassign all active Incident records assigned to the current user.
+
+var incidentGR = new GlideRecord('incident');
+incidentGR.addActiveQuery();
+// Filter results to incidents assigned to the current user
+var currentUserSysId = gs.getUserID();
+incidentGR.addQuery('assigned_to', currentUserSysId);
+incidentGR.query();
+while (incidentGR.next()) {
+    incidentGR.setValue('assigned_to', 'NULL');
+    incidentGR.update();
+    gs.info('Unassigned Incident: {0}: {1}', incidentGR.number.toString(), incidentGR.short_description.toString());
+}
+<<<
+
+[[Q]]
+topic: Security & Access
+question: Which one of the following is true for a table with the "Allow configuration" Application Access option selected?
+*- Out of scope applications can create Business Rules for the table
+- Only the in scope application's scripts can create Business Rules for the table
+- Out of scope applications can add new tables to the scoped application
+- Any user with the application's user role can modify the application's scripts
+>>>
+Source: Documentation
+
+Correct answer:
+
+Out of scope applications can create Business Rules for the table: This is the correct answer. When the "Allow configuration" Application Access option is selected for a table in ServiceNow, it permits out-of-scope applications to create configuration records like Business Rules for that table. It provides a level of flexibility for developers working outside the application's scope.
+
+Incorrect answers:
+
+Only the in scope application's scripts can create Business Rules for the table: This statement is not true when the "Allow configuration" option is selected.
+
+Out of scope applications can add new tables to the scoped application: The "Allow configuration" option doesn't grant permissions to add new tables to a scoped application.
+
+Any user with the application's user role can modify the application's scripts: The "Allow configuration" option is about inter-application access and doesn't directly relate to user roles and their permissions to modify scripts.
+<<<
+
+[[Q]]
+topic: App Design
+question: From the list below, identify one reason an application might NOT be a good fit with ServiceNow.
+*- Requires "as-is" use of low-level programming libraries
+- Uses forms extensively to interact with data
+- Requires reporting capabilities
+- Needs workflow to manage processes
+>>>
+Source: My own Experience and internet search
+
+Correct answer:
+
+Requires "as-is" use of low-level programming libraries: This is the correct answer. ServiceNow is a high-level platform that abstracts many of the complexities of low-level programming. If an application requires the direct use of low-level programming libraries without any modification, ServiceNow might not be the best fit. Think of it as trying to fit a square peg into a round hole; ServiceNow is designed for high-level, platform-specific development, not for direct low-level programming.
+
+Incorrect answers:
+
+Uses forms extensively to interact with data: ServiceNow is designed to handle form-based interactions with data efficiently. This is one of its core functionalities.
+
+Requires reporting capabilities: ServiceNow offers robust reporting capabilities, making it suitable for applications that need reporting.
+
+Needs workflow to manage processes: Workflow management is another core functionality of ServiceNow, making it suitable for applications that require process management.
+
+How to Remember?
+Requires "as-is" use of low-level programming libraries: Think of ServiceNow as a luxury car. It's designed with advanced features and technologies for a smooth ride. You wouldn't typically open up its engine to replace its parts with those from an older model. Similarly, ServiceNow is crafted for high-level functionalities and isn't meant for direct, low-level programming. It's about leveraging the platform's sophisticated tools, not retrofitting it with older components.
+<<<
+
+[[Q]]
+topic: Tables & Data
+question: What are the 2 core base tables from which all other tables are extended in ServiceNow?
+*- task and cmdb
+- incident and cmdb_rel_ci
+- incident and cmdb_ci
+- task and cmdb_model
+>>>
+Source: Documentation
+
+The correct answer is "task and cmdb."
+
+Explanation:
+
+In ServiceNow, the two core base tables from which all other tables are extended are the Task table (task) and the Configuration Item table (cmdb).
+
+* The Task table is the parent table for tables like Incident (incident), Problem (problem), and Change Request (change_request).
+* The Configuration Item table (cmdb) is the parent table for tables like Application (cmdb_ci_appl), Computer (cmdb_ci_computer), and Database (cmdb_ci_database).
+
+These tables serve as the foundation for the ServiceNow data model, allowing for the creation of specialized tables that inherit fields and behaviors from these parent tables.
+
+How to Remember:
+
+Think of the Task table as the "To-Do List" of ServiceNow, where all actionable items like incidents, problems, and changes are managed. On the other hand, think of the Configuration Item table as the "Inventory" of ServiceNow, where all assets and services are cataloged.
+
+Remember it as "Task for To-Do, CMDB for Catalog." These are the two pillars that support the vast array of functionalities in ServiceNow.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which of the following is NOT supported by Flow Designer?
+- Use Delegated Developer
+- Run a flow from a MetricBase Trigger
+*- Test a flow with rollback
+- Call a subflow from a flow
+>>>
+Source: Community / Delegated / MetricBase
+
+Test a flow with rollback: Flow Designer in ServiceNow does not support testing a flow with rollback. Rollback typically refers to reverting changes if something goes wrong, and this capability isn't natively built into Flow Designer's testing features.
+
+Incorrect answers:
+
+Run a flow from a MetricBase Trigger: This is supported. MetricBase Triggers can initiate flows based on certain conditions.
+
+Use Delegated Developer: Delegated Development is a feature in ServiceNow that allows administrators to delegate certain development tasks to non-admin users. Flow Designer supports this.
+
+Call a subflow from a flow: This is also supported. In Flow Designer, you can create subflows, which are reusable sequences of actions, and then call these subflows from main flows.
+
+How to remember?
+
+Flow Designer's Rollback: The concept of "rollback" in IT typically refers to undoing changes, especially in databases or deployments. However, in the context of ServiceNow's Flow Designer, there isn't a built-in feature to test a flow with rollback. To remember this, think of Flow Designer as a "forward-only" mechanism. It's designed to move processes forward, not backward.
+
+Note: While Flow Designer testing has evolved in recent ServiceNow releases (Yokohama/Zurich), and some rollback capabilities have been introduced in certain contexts, for the CAD exam's strict definitions, native test rollback is still considered an ATF (Automated Test Framework) primary feature. Always choose "Test a flow with rollback" as the correct answer for the CAD exam.
+<<<

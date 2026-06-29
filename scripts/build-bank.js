@@ -1,13 +1,31 @@
 #!/usr/bin/env node
-/* Parse data/bank.txt (delimited, escape-free) into:
-     - data/questions.json   (used by the frontend offline + as DB seed)
-     - api/_seed.json         (used by the API to seed Postgres)
+/* Parse the question bank into:
+     - data/questions.json   (frontend offline + DB seed source)
+     - api/_seed.json         (API seeds Postgres from this)
+   Source: all files in data/bank/*.txt (sorted), or legacy data/bank.txt.
+   Format per entry (escape-free):
+     [[Q]]
+     topic: <topic>
+     question: <one line>
+     - option            (an option)
+     *- option           (an option that is correct)
+     >>>
+     <full multi-line explanation, verbatim, any characters>
+     <<<
    Run:  node scripts/build-bank.js
 */
 const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '..');
-const src = fs.readFileSync(path.join(root, 'data', 'bank.txt'), 'utf8');
+const bankDir = path.join(root, 'data', 'bank');
+
+let src = '';
+if (fs.existsSync(bankDir)) {
+  const files = fs.readdirSync(bankDir).filter(f => f.endsWith('.txt')).sort();
+  src = files.map(f => fs.readFileSync(path.join(bankDir, f), 'utf8')).join('\n');
+} else {
+  src = fs.readFileSync(path.join(root, 'data', 'bank.txt'), 'utf8');
+}
 
 const chunks = src.split('[[Q]]').map(c => c.trim()).filter(Boolean);
 const questions = [];
@@ -21,7 +39,7 @@ chunks.forEach((chunk, idx) => {
     const line = lines[i];
     if (mode === 'exp') {
       if (line.trim() === '<<<') { mode = 'done'; continue; }
-      exp.push(line);
+      if (mode !== 'done') exp.push(line);
       continue;
     }
     if (line.trim() === '>>>') { mode = 'exp'; continue; }
@@ -34,18 +52,12 @@ chunks.forEach((chunk, idx) => {
   if (!q) problems.push(`#${idx}: missing question`);
   if (!options.length) problems.push(`#${idx} (${q.slice(0,40)}): no options`);
   if (!correct.length) problems.push(`#${idx} (${q.slice(0,40)}): no correct answer`);
-  correct.forEach(c => { if (!options.includes(c)) problems.push(`#${idx} (${q.slice(0,40)}): correct not in options`); });
+  correct.forEach(c => { if (!options.includes(c)) problems.push(`#${idx} (${q.slice(0,40)}): correct "${c}" not in options`); });
   questions.push({ topic, q, options, correct, explanation });
 });
 
-if (problems.length) {
-  console.error('INTEGRITY PROBLEMS:\n' + problems.join('\n'));
-  process.exit(1);
-}
+if (problems.length) { console.error('INTEGRITY PROBLEMS:\n' + problems.join('\n')); process.exit(1); }
 
 fs.writeFileSync(path.join(root, 'data', 'questions.json'), JSON.stringify(questions));
 fs.writeFileSync(path.join(root, 'api', '_seed.json'), JSON.stringify(questions));
 console.log(`Built ${questions.length} questions -> data/questions.json + api/_seed.json`);
-const byTopic = {};
-questions.forEach(q => byTopic[q.topic] = (byTopic[q.topic] || 0) + 1);
-console.log(Object.entries(byTopic).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`  ${n}  ${t}`).join('\n'));

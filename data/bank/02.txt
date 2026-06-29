@@ -1,0 +1,319 @@
+[[Q]]
+topic: User Interface
+question: Which one of the following client-side scripts apply to Record Producers?
+*- Catalog Client Scripts and Catalog UI Policies
+- Client Scripts and UI Policies
+- UI Scripts and UI Actions
+- UI Scripts and Record Producer Scripts
+>>>
+Record Producers are catalog items, so they use Catalog Client Scripts and Catalog UI Policies.
+<<<
+
+[[Q]]
+topic: User Interface
+question: Which method prints a message on a blue background to the top of the current form by default?
+- g_form.showFieldMsg()
+- g_form.addInfoMsg()
+- g_form.showFieldMessage()
+*- g_form.addInfoMessage()
+>>>
+g_form.addInfoMessage() shows an info (blue) message at the top of the form. showFieldMsg targets a specific field.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: A scoped application containing Flow Designer content dedicated to a particular application is called a(n):
+- Flow
+*- Spoke
+- Bundle
+- Action
+>>>
+A Spoke is a scoped app that packages Flow Designer flows, subflows, and actions for a specific integration/app.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Which source control operation is available from BOTH Studio and the Git Repository?
+- Stash Local Changes
+- Switch Branch
+*- Create Branch
+- Commit Changes
+>>>
+Create Branch is available in both Studio and the Git repository.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: How should Application Access be configured to prevent all other private application scopes from creating configuration records on an application data tables?
+- Set the Accessible from field value to This application scope only and de-select the Allow access to this table via web services option
+- Set the Accessible from field value to All application scopes and de-select the Can create option
+*- Set the Accessible from field value to This application scope only
+- You must create Access Controls to prevent all other application scopes from creating configuration records rather than using Application Access
+>>>
+Setting 'Accessible from' to 'This application scope only' blocks other private scopes from creating configuration records.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: One of the uses of the ServiceNow REST API Explorer is:
+*- Create sample code for sending REST requests to ServiceNow
+- Convert SOAP Message functions to REST methods
+- Practice using REST to interact with public data providers
+- Find resources on the web for learning about REST
+>>>
+REST API Explorer lets you test endpoints and generate sample code snippets for ServiceNow REST calls.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which of the following objects does a Display Business Rule NOT have access to?
+- GlideSystem
+*- previous
+- current
+- g_scratchpad
+>>>
+Display rules run on a read (no update), so 'previous' is not available. They do have current, g_scratchpad, and gs.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which one of the following is true for GlideUser (g_user) methods?
+- Can be used in Business Rules only
+*- Can be used in Client Scripts, UI Policies, and UI Actions
+- Can be used in Business Rules, and Script Includes
+- Can be used in Client Scripts and UI Policies only
+>>>
+g_user is a client-side API usable in Client Scripts, UI Policies, and UI Actions.
+<<<
+
+[[Q]]
+topic: User Interface
+question: Which one of the following is the fastest way to create and configure a Record Producer?
+- Create a Catalog Category, open the category, and select the Add New Record Producer button
+- Use the Record Producer module then add and configure all variables manually
+*- Open the table in the Table records and select the Add to Service Catalog Related Link
+- Open the table form, right-click on the form header, and select the Create Record Producer menu item
+>>>
+Using the table's 'Add to Service Catalog' related link auto-generates a Record Producer with default variables.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which one of the following is NOT a method used for logging messages in a server-side script for a privately-scoped application?
+- gs.debug()
+- gs.error()
+- gs.warn()
+*- gs.log()
+>>>
+gs.log() is a global method not available in scoped apps. Use gs.debug/info/warn/error in scoped apps.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Which of the following features are available to Global applications? (Select 3)
+- Delegated Development
+*- Source Control
+*- Automated Test Framework
+*- Flow Designer
+>>>
+Global apps support Source Control, ATF, and Flow Designer. Delegated Development is not supported in Global scope.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: Which one of the following is true regarding Application Scope?
+- Developers can choose the prefix for a scope namespace
+*- Applications downloaded from 3rd party ServiceNow application developers cannot have naming conflicts
+- Any developer can edit any application
+- All applications are automatically part of the Global scope
+>>>
+Scope namespaces are unique and system-generated, so third-party apps cannot have naming conflicts.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which one of the following is part of the client-side scripting API?
+- current and previous objects
+- workflow.scratchpad
+- GlideSystem object (gs)
+*- GlideUser object (g_user)
+>>>
+g_user (GlideUser) is client-side. current/previous and gs are server-side; workflow.scratchpad is for workflows.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Which one of the following is NOT required to link a ServiceNow application to a Git repository?
+- Password
+- URL
+*- Application name
+- Username
+>>>
+Linking needs URL, Username, and Password/token. The application name is not required.
+<<<
+
+[[Q]]
+topic: User Interface
+question: Which one of the following is a list of Link types?
+- Assessment, List of Records, Content Page, Roles
+- List of Records, Content Page, Order, URL (from arguments)
+- List of Records, Separator, Catalog Type, Roles
+*- Assessment, List of Records, Separator, Timeline Page
+>>>
+Valid module Link types include Assessment, List of Records, Separator, and Timeline Page. Roles and Order are other fields.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: When configuring a REST Message, the Endpoint is:
+- Information about the format of the returned data
+- The commands to the REST script to stop execution
+- The response from the provider indicating there is no data to send back
+*- The URI of the data to be accessed, queried, or modified
+>>>
+The Endpoint is the URI (address) of the resource to access, query, or modify.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which one of the following is a server-side method that returns true if the currently logged in user has the admin role?
+*- gs.hasRole('admin')
+- gs.hasRoleExactly('admin')
+- g_form.hasRoleExactly('admin')
+- g_form.hasRole('admin')
+>>>
+gs.hasRole('admin') is the server-side check. g_form is client-side and has no hasRole method.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: The source control operation used to store local changes on an instance for later application is called a(n):
+- Branch
+- Tag
+*- Stash
+- Update set
+>>>
+Stashing temporarily saves local changes for later application.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which objects can you use in Inbound Action scripts? (choose 3)
+*- event
+- producer
+- previous
+*- current
+*- email
+>>>
+Inbound Actions can use current, email, and event. producer is for record producers; previous is for business rules.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: A script queries sc_task for the current sys_id, then queries the task table where sys_id matches, then prints work notes. What is the result?
+- Queries sc_task for the current sys_id and then queries the parent table (task) for records with the matching task id, then prints work notes
+*- Queries sc_task for the current sys_id and then queries the parent table (task) for records with the matching sys_id, then prints work notes
+- Queries the extended table (sc_task) for the current sys_id and prints the work notes field
+>>>
+It matches on sys_id (not task id) between the extended sc_task and parent task table, then prints work_notes.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Application developers configure ServiceNow using industry standard JavaScript to...
+- Customize the organization company logo and banner text
+- Enable the right-click to edit the context menus on applications in the navigator
+*- Extend and add functionality
+- Configure the outgoing email display name
+>>>
+Developers use JavaScript primarily to extend and add functionality to applications.
+<<<
+
+[[Q]]
+topic: Tables & Data
+question: If the Create module field is selected when creating a table, what is the new module default behavior?
+- Display an empty homepage for the application
+- Open a link to a wiki article with instructions
+- Open an empty form so new records can be created
+*- Display a list of all records from the table
+>>>
+The auto-created module defaults to a list view of all records in the table.
+<<<
+
+[[Q]]
+topic: User Interface
+question: How many application menus can an application have?
+- 2, one for user modules and one for administrator modules
+- 1, used for all application modules
+- 3, one for user, one for administrator, and one for the ServiceNow administrator modules
+*- As many as the application design requires
+>>>
+There is no fixed limit; create as many application menus as the design needs.
+<<<
+
+[[Q]]
+topic: User Interface
+question: Which one of the following is NOT a UI Action type?
+*- Form choice
+- Form button
+- List choice
+- List banner button
+>>>
+'Form choice' is not a UI Action type. Valid types include Form button, List choice, and List banner button.
+<<<
+
+[[Q]]
+topic: Notifications & Email
+question: Which of the following are configured in an Email Notification? (Select 3)
+*- When to send the notification
+*- What content will be in the notification
+*- Who will receive the notification
+- How to send the notification
+>>>
+You configure When, Who, and What. 'How' (delivery) is handled by the email server, not the notification.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which one of the following is true for a Script Include with a Protection Policy value of Protected?
+- Any user with the protected_edit role can see and edit the Script Include
+- The Protection Policy is applied only if the glide.app.apply_protection system property value is true
+*- The Protection Policy is applied only if the application is downloaded from the ServiceNow App Store
+- The Protection policy option can only be enabled by a user with the admin role
+>>>
+Protection (encryption) only takes effect on instances where the app is installed from the Store.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: When creating new application files in a scoped application, cross scope access is turned on by default in which of the following?
+- Script Include
+- REST messages
+*- Table
+- Workflow
+>>>
+Cross-scope access (read) is on by default for Tables; other artifacts require explicit enablement.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: Which of the following methods are useful in Access Control scripts?
+- gs.hasRole() and current.isNew()
+*- gs.hasRole() and current.isNewRecord()
+- g_user.hasRole() and current.isNew()
+- g_user.hasRole() and current.isNewRecord()
+>>>
+ACL scripts are server-side: use gs.hasRole() and current.isNewRecord().
+<<<
+
+[[Q]]
+topic: App Design
+question: What are some of the considerations to document as part of the business process?
+*- Business problem, data input/output, users/stakeholders, and process steps
+- Business problem, data input/output, users/stakeholders, and database capacity
+- Business problem, data input/output, project schedule, and process steps
+- Business problem, users/stakeholders, available licenses, and database capacity
+>>>
+Document the business problem, data input/output, users/stakeholders, and process steps.
+<<<
+

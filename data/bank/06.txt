@@ -1,0 +1,518 @@
+[[Q]]
+topic: Notifications & Email
+question: When troubleshooting notifications, where do you navigate to see if an email was sent in response to an event?
+*- System Logs > Emails
+- System Logs > Events
+- System Logs > ICE Logs
+- System Logs > Push Notifications
+>>>
+The Email log (sys_email) shows all sent/received mail and delivery status. Events only prove the event fired.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Server-side scripts manage what?
+- User access
+- Playbook access
+*- Database and backend
+- Forms and Fields
+>>>
+Server-side scripts (Business Rules, Script Includes, Scheduled Jobs) handle the database and backend logic.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: What is the purpose of the Application Picker?
+- Select an application as a favorite in the Application Navigator
+*- Choose an application to edit and set the Application Scope
+- Select an application to run
+- Choose an application to download and install
+>>>
+The Application Picker sets the current scope you are developing in; changes are captured in that app.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Which one of the following is true for the Application Picker?
+- All applications including baseline (Incident) appear
+- Only custom applications appear
+*- All custom application scopes and the Global scope appear
+- Only downloaded applications appear
+>>>
+The picker shows Global plus all private scopes you can develop in (not baseline tables as scopes).
+<<<
+
+[[Q]]
+topic: Security & Access
+question: When creating application tables a user role is automatically added. Which other role does an application typically have?
+*- Application Admin
+- Application Fulfiller
+- Application Super User
+- Application Manager
+>>>
+Apps typically define a user role and an admin role (e.g., x_app.user and x_app.admin).
+<<<
+
+[[Q]]
+topic: Guided App Creator
+question: In Guided Application Creator, what are the options for creating a table? (Choose three)
+- Run import jobs
+*- Extend a table
+- Use API calls
+*- Create a table from scratch
+*- Upload an existing spreadsheet
+>>>
+GAC table options: create from scratch, extend an existing table, or upload a spreadsheet.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which Flow Designer variable data types can store record/complex data? (Choose three)
+- Choice
+*- Integer
+*- String
+*- Array.Reference
+- Label
+>>>
+Primitives (String, Integer) and complex Array.* types (e.g., Array.Reference) store data. 'Choice' and 'Label' are not flow variable types.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: When creating a table in a privately-scoped application, which four Access Controls are created?
+- Create Delete Read Update
+- Insert Delete Query Write
+- Insert Delete Query Update
+*- Create Delete Read Write
+>>>
+Four ACLs are auto-created: Create, Read, Write, Delete (Write = update).
+<<<
+
+[[Q]]
+topic: Tables & Data
+question: What happens to the List view when a new field is added to an existing table?
+- A List View is created with the new field
+*- The new field is not added to the List view
+- The new field is added at the start of the List
+- The new field is added at the end of the List
+>>>
+New fields are added to the dictionary but must be manually added to a List Layout.
+<<<
+
+[[Q]]
+topic: User Interface
+question: What is a characteristic of Modules?
+*- Every Module must be part of an Application Menu.
+- Modules cannot open forms or lists.
+- Access to Modules is not controlled with roles.
+- Every Module must be associated with a table.
+>>>
+A module must belong to an application menu. It can link to URLs/UI pages (not only tables) and is role-controlled.
+<<<
+
+[[Q]]
+topic: Tables & Data
+question: When selecting a field data type, which statement is NOT correct?
+- Use the String data type for a free-form text field
+- Use the Choice data type to limit options in a field
+*- Use the Date data type to enter the date and time of day
+- Use the Phone Number data type to automate phone number validation
+>>>
+The Date type stores only a calendar date. Use Date/Time to store both date and time of day.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: What are web services?
+- Methods used to create and maintain UI Pages
+*- Methods used to allow applications to connect to other software applications over a network
+- Methods used to discover a wide variety of systems and applications
+- A customer-facing view of available services/products
+>>>
+Web services (REST/SOAP) let applications communicate over a network (inbound and outbound).
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: When a ServiceNow instance requests information from a web service, ServiceNow is the web service:
+*- Consumer
+- Provider
+- Publisher
+- Specialist
+>>>
+Sending the request = Consumer (outbound). Receiving requests = Provider (inbound).
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: What are some benefits of developing private scoped applications? (Choose two)
+*- To reduce risk of code collisions
+- To avoid using a code repository like GitHub or GitLab
+*- To enable installation and uninstallation of an application
+- To replicate ServiceNow functions in a private scope
+>>>
+Scoping prevents name collisions (unique namespace) and enables clean install/uninstall of the app.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: What does the 'Read-only' protection policy for Script Includes allow in a custom application?
+*- Application developers can view the script logic but not change it.
+- Only administrators can edit the Script Include.
+- Only administrators can delete the Script Include.
+- Application developers can customize the Script Include.
+>>>
+Read-only lets users see the code but not edit it (effective on target/installed instances).
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: How can an application link to a repository behind a firewall?
+*- Link to source control through a MID Server.
+- Link to source control with multi-factor authentication.
+- Link to source control with an access token.
+- This option is not supported.
+>>>
+A MID Server proxies the connection between the cloud instance and an on-prem Git repository.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: What records track cross-scope applications/scripts that request access to a resource or event?
+- Caller tracking records
+- Access control level records
+*- Restricted caller access records
+- Cross-scope access records
+>>>
+Restricted Caller Access (RCA) records govern whether cross-scope requests are allowed or denied.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: What is the Event Registry?
+- The Event Log listing all generated Events
+- A Workflow launched on every Event for debugging
+- The method used in server scripts to generate Events
+*- A table containing a record for every Event known to the system, allowing ServiceNow to react when Events are generated
+>>>
+The Event Registry (sysevent_register) defines events the platform can recognize and respond to.
+<<<
+
+[[Q]]
+topic: User Interface
+question: When designing a form, what do you create to organize fields?
+- Related lists
+*- Sections
+- Buttons
+- Tabs
+>>>
+Form Sections group related fields and can render as tabs or scrolling sections.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: What can a developer do with the REST API Explorer? (Choose two)
+- Practice using REST to interact with public data providers
+- Find resources on the web for learning about REST
+- Convert REST Message functions to REST methods
+*- Test API endpoints on ServiceNow
+*- Create sample code for sending REST requests to ServiceNow
+>>>
+REST API Explorer tests ServiceNow endpoints and generates sample code (Python, cURL, ServiceNow Script, etc.).
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Which of the following is NOT a way to install an application on a ServiceNow instance?
+- Install an application from the Application Repository
+*- Select the Copy button on the application record
+- Download and install a third-party application from the ServiceNow Store
+- Download and install an application from the ServiceNow Share web site
+>>>
+There is no cross-instance 'Copy' install. Use Store, Application Repository, Share, or XML import.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: When configuring a REST Message, what syntax indicates passing a variable during a function call?
+*- ${variable_name}
+- current.variable_name
+- < variable_name >
+- < variable_name >.do?WSDL
+>>>
+Use ${variable_name} for dynamic variables in REST/SOAP messages, set via setStringParameter().
+<<<
+
+[[Q]]
+topic: User Interface
+question: Which items are valid UI Action types? (Choose three)
+- Record navigation button
+*- Form button
+*- List banner button
+- Workflow action
+*- List choice
+- Form choice
+>>>
+Valid UI Action types include Form button, List banner button, and List choice. 'Form choice' is not one.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which is true for g_user.hasRole('x_my_app_user')?
+- Returns false only if the user has the role
+- There is no g_user.hasRole() method
+*- Returns true if the user has the role OR the admin role
+- Returns true only if the user has the role
+>>>
+hasRole() returns true for the specified role AND always returns true for admins.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Which methods can be used to install an application on a ServiceNow instance? (Choose three)
+*- Import an application from an XML file.
+- Download from Stack Overflow.
+- Use the 'Install' button on the application record.
+- Install from the Google Play Store.
+*- Download a third-party application from the ServiceNow Store.
+*- Install an application from the Application Repository.
+>>>
+Install via the Store, the Application Repository, or by importing XML.
+<<<
+
+[[Q]]
+topic: User Interface
+question: Which Link Type opens the Record Producer UI for a user (rather than the standard form)?
+*- URL (from Arguments:)
+- Script (from Arguments:)
+- Content Page
+- HTML (from Arguments:)
+>>>
+Use 'URL (from Arguments:)' pointing to the catalog item URL to open the Record Producer.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which of the following is NOT a Flow Designer feature?
+- Run a flow from a Catalog item
+*- Call a flow from another flow or subflow
+- Add stages to a flow
+- Test a flow using the 'Run as' feature
+>>>
+A flow can call a subflow, but a flow cannot directly call another flow. Subflows are for reuse.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which GlideRecord methods run a query against a database table? (Choose three)
+- runQuery()
+*- _query()
+*- get()
+*- query()
+- _get()
+>>>
+query(), _query(), and get() execute against the database. runQuery() and _get() are not valid methods.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which objects are part of the client-side scripting API? (Choose two)
+*- g_user
+*- g_form
+- workflow.scratchpad
+- gs
+- current and previous
+>>>
+g_form and g_user are client-side. gs, current/previous, and workflow.scratchpad are server-side.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: What is the ServiceNow Store?
+*- Marketplace for free and paid certified ServiceNow applications and integrations
+- Alternate name for the ServiceNow Developer Share site
+- Downloadable ServiceNow script archive
+- Source for ServiceNow Community created developer content
+>>>
+The Store is the certified marketplace for ServiceNow apps and integrations. Share hosts uncertified community content.
+<<<
+
+[[Q]]
+topic: Tables & Data
+question: A graphical view of relationships among tables is a ______.
+- Dependency view
+- Graphical User Interface
+- Map source report
+*- Schema map
+>>>
+The Schema Map graphically shows table relationships (extensions and reference fields).
+<<<
+
+[[Q]]
+topic: Security & Access
+question: Which database operation CANNOT be controlled with Application Access?
+- Create
+- Delete
+*- Query
+- Update
+>>>
+Application Access controls Create, Read, Update, Delete. Query ability is bundled with Read (no separate checkbox).
+<<<
+
+[[Q]]
+topic: Security & Access
+question: Which are valid caller access field options? (Choose three)
+- Accessible from
+*- Caller Restriction
+*- None
+- Allow Configuration
+*- Caller Tracking
+- Caller Permission
+>>>
+Caller Access options: None, Caller Tracking, Caller Restriction. 'Caller Permission' is not valid.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which object CANNOT be used in a Script Action script?
+- event
+- current
+- GlideRecord
+*- previous
+>>>
+Script Actions can use current, event, and GlideRecord. previous is only available in Business Rules.
+<<<
+
+[[Q]]
+topic: Debugging & Testing
+question: Using a Custom UI test step in ATF, which is NOT a testable page component?
+- UI pages
+- UI controls
+- Buttons
+*- Form field values
+>>>
+Custom UI steps test UI pages, controls, and buttons. Standard form field values use the 'Form' step category.
+<<<
+
+[[Q]]
+topic: App Design
+question: Why would you build a custom app? (Choose two)
+- To avoid using a code repository
+*- To fulfill a specific use case on internal processes
+*- To create a custom integration for a 3rd party system
+- To replace ServiceNow base tables
+>>>
+Custom apps address unique internal processes and build specialized third-party integrations.
+<<<
+
+[[Q]]
+topic: Tables & Data
+question: Can inherited fields be deleted from a table?
+*- No, inherited fields cannot be deleted from a child table
+- Yes, select the red X in the left-most column
+- Yes, but only if there has never been saved field data
+- Yes, but only if they are text fields
+>>>
+Inherited fields can only be modified/deleted from the parent table, not the child.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: Which of the following can be an external data source for a ServiceNow application?
+- Microsoft Excel File
+- Data provided by a public web service using SOAP or REST
+- CSV file
+*- All of the above
+>>>
+Data sources support files (Excel/CSV/XML), JDBC, and web services (REST/SOAP).
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: What is the GlideForm client-side scripting object?
+- gs_form
+- sn.form
+*- g_form
+- gs.form
+>>>
+g_form is the GlideForm client-side object for manipulating form data and UI.
+<<<
+
+[[Q]]
+topic: Guided App Creator
+question: Which statement is true about Guided Application Creator?
+- The welcome screen appears every time a new application is created
+*- Default access controls are automatically created
+- The global scope option is turned on by default
+- A scoped application user role is automatically created
+>>>
+GAC auto-creates default ACLs (and a user role) when you create a table, making the app secure by default.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: What does Application Scoping provide? (Choose two)
+- A method to track users involved in developing the application.
+*- A namespace (prefix and scope name) to prevent cross-application name collisions.
+*- A means to control how scripts from other scopes can alter tables in a scoped application.
+- A means to control which roles can view the application and its modules.
+>>>
+Scoping provides a unique namespace and cross-scope access controls (Application Access).
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: What is the ServiceNow Application Repository?
+- A database for tracking user permissions
+- A database for logging application errors
+- A database of ServiceNow provided applications
+*- A database containing custom ServiceNow applications
+>>>
+The App Repository is your company's private store for publishing/installing custom scoped apps across instances.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: When configuring a SOAP Message, what syntax indicates a variable to pass when the function is called?
+- current.variable_name
+- < variable_name >
+- < variable_name >.do?WSDL
+*- ${variable_name}
+>>>
+Use ${variable_name} for variable substitution in SOAP/REST messages.
+<<<
+
+[[Q]]
+topic: Tables & Data
+question: What happens when an existing table is extended? (Choose three)
+*- Parent table Access Controls are also evaluated while determining access for the new table.
+*- The new table inherits the functionality built into the parent table.
+- All required behavior must be newly scripted from the new table.
+*- The new table inherits all the fields from the parent table.
+- Specific fields from the parent can be selected to be inherited.
+>>>
+Extending inherits ALL fields, functionality, and the parent's ACLs are evaluated. Inheritance is total, not selective.
+<<<
+
+[[Q]]
+topic: User Interface
+question: What Module Link type is used to access an Application Properties page?
+- Single Record
+- HTML (from Arguments)
+*- URL (from Arguments)
+- Script (from Arguments)
+>>>
+Use 'URL (from Arguments)' pointing to system_properties_ui.do with the category argument.
+<<<
+
+[[Q]]
+topic: Tables & Data
+question: The Task table is an example of which of the following? (Choose two)
+*- Base class
+- Legacy class
+*- Parent class
+- Child class
+>>>
+Task is a base class (extends nothing) and a parent class (Incident, Problem, Change extend it).
+<<<
+

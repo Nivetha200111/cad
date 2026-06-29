@@ -1,0 +1,338 @@
+[[Q]]
+topic: Debugging & Testing
+question: Which Script Debugger feature helps filter debugging searches to quickly narrow down script problems?
+*- Script Tracer
+- Script Filter
+- Script Search
+- Session Tracer
+>>>
+Script Tracer traces specific lines of script in the GlideRecord that changed during execution, narrowing down problems.
+<<<
+
+[[Q]]
+topic: Debugging & Testing
+question: Which module creates a user for an Automated Test Framework test?
+*- Create a User
+- Create Role
+- Create Group
+- User Creation
+>>>
+The ATF 'Create a User' step generates a temporary user (with roles/groups) for the test and rolls it back afterward.
+<<<
+
+[[Q]]
+topic: Tables & Data
+question: The option in Table configuration that allows this table to be extended from is?
+- Extended By
+- Can be Extended
+*- Extensible
+>>>
+Mark a table 'Extensible' to allow it to be extended by child tables.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: Which of the following actions is not supported by Studio?
+*- Enable context menu options to modify data
+- Download only the required session logs.
+- Format code indentation with JS Beautify
+- Integrate with source control
+>>>
+Studio is a development IDE; it does not provide context-menu data modification. It does source control, JS Beautify, and log download.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: What debugging method do you use in server-side scripting in a scoped application?
+- gs.debuglog()
+- gs.addInfoMessage()
+*- gs.info()
+- gs.log()
+>>>
+gs.info() logs informational messages server-side in scoped apps. gs.log() is global-only; addInfoMessage is client UI.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which of the following variables are NOT available in all Business Rules? (Select 2)
+- GlideSystem
+*- previous
+- current
+*- g_scratchpad
+>>>
+previous is only available on update/delete; g_scratchpad only in display rules. current and gs are always available.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: What is the main purpose of Integration Hub in ServiceNow?
+- Activity in workflow designer to integrate 3rd party applications
+*- Enables execution of third-party APIs as part of a flow when a specific event occurs in ServiceNow
+- Custom application from ServiceNow store used for importing data into ServiceNow
+>>>
+Integration Hub uses spokes to execute third-party APIs as actions within flows triggered by ServiceNow events.
+<<<
+
+[[Q]]
+topic: Notifications & Email
+question: What is NOT true about email notifications (i.e., what is not configured)?
+- Who
+*- How
+- When
+- What
+>>>
+You configure When, Who, and What. 'How' (the delivery mechanism) is not part of notification setup.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: Which of the following modules enables security rule debugging?
+- System Diagnostics > Session Debug > Debug Security Rules
+*- System Security > Debugging > Debug Security Rules
+- Access Control > Debugging > Debug Security Rule
+- System Diagnostics > Debugging > Debug Security Rules
+>>>
+Debug Security Rules lives under System Security > Debugging.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: When evaluating Access Controls, ServiceNow searches and evaluates:
+*- From the most specific match to the most generic match
+- From the most generic match to the most specific match
+- Only for matches on the current field
+- Only for matches on the current table
+>>>
+ACLs are evaluated from most specific to most generic (a funnel).
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which of the following API methods are used when working with datetime in a privately scoped application?
+- GlideRecord
+- GlideSystem
+- gs.nowDateTime()
+*- GlideDateTime
+>>>
+The scoped GlideDateTime class provides methods for date/time operations.
+<<<
+
+[[Q]]
+topic: User Interface
+question: Which of the following pops out a special field message?
+- gs.addFieldMessage()
+*- g_form.showFieldMsg()
+- gs.addInfoMessage()
+- gs.showFieldMessage()
+- gs.addErrorMessage()
+>>>
+g_form.showFieldMsg() displays a message under a specific field (client-side). gs.* methods are server-side.
+<<<
+
+[[Q]]
+topic: Reporting
+question: Which of the following is NOT a report type in ServiceNow reports?
+- Line
+*- Chart
+- List
+- Trend
+>>>
+'Chart' is a generic category, not a specific report type. Line, List, and Trend are real types.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which one of the following is true about client-side scripted security?
+*- Client side scripts have access to the GlideUser (g_user) user methods
+- Client side scripts have access to the GlideSystem (gs) user methods
+- Client side scripts have access to both GlideSystem (gs) and GlideUser (g_user) methods
+>>>
+Client-side scripts use g_user (hasRole, hasRoleExactly, etc.). gs is server-side only.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: How is access to Application menus and modules controlled?
+- Client Scripts
+- Application Rules
+- Access controls
+*- Roles
+>>>
+Roles control visibility/access to application menus and modules.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which of the following scripts do not always run on the server side?
+- Script Includes
+*- UI Action
+- Business Rule
+- Script Action
+>>>
+UI Actions can run client-side, server-side, or both. The others are strictly server-side.
+<<<
+
+[[Q]]
+topic: Notifications & Email
+question: What is the correct syntax for adding dynamic content to a notification HTML message field?
+- current.short_description
+- ${current.short_description}
+- $current.short_description
+*- ${short_description}
+- $short_description
+>>>
+Use ${field_name}. The platform notification editor inserts variables with ${ } around the field name.
+<<<
+
+[[Q]]
+topic: Notifications & Email
+question: How does ServiceNow match inbound email to existing records?
+- Subject Line
+*- Watermark
+- Record link
+- sys_id
+>>>
+A unique watermark in outbound mail lets ServiceNow match replies/forwards to the originating record.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: What are the core activities of a Workflow? (Select 7)
+*- Subflows
+*- Timers
+*- Utilities
+*- Service Catalog
+*- Notifications
+*- Conditions
+*- Approvals
+- Test
+>>>
+Core workflow activities: Subflows, Timers, Utilities, Service Catalog, Notifications, Conditions, Approvals. 'Test' is not one.
+<<<
+
+[[Q]]
+topic: User Interface
+question: What is true about homepages on mobile?
+- Same as desktop homepages with the delete option
+- Same as desktop homepages in every way
+*- There are no homepages on mobile
+- Same as desktop homepages without the delete option
+>>>
+Mobile uses Home Page Collections/Sections/Modules — not desktop-style homepages.
+<<<
+
+[[Q]]
+topic: Application Automation
+question: Which of the following objects does a before business rule have access to?
+*- All of the answers are true
+- GlideRecord
+- current
+- previous
+>>>
+A before business rule can access current, previous, and GlideRecord.
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: Which of the following function is NOT available in the ServiceNow REST API?
+- GET
+- POST
+- PATCH
+- DELETE
+*- COPY
+- PUT
+>>>
+ServiceNow REST supports GET, POST, PUT, PATCH, DELETE, HEAD — not COPY.
+<<<
+
+[[Q]]
+topic: Notifications & Email
+question: When ServiceNow receives an inbound email it attempts to match the sender to a user record. Which one of the following is NOT true?
+- If a match is found, the user is impersonated for the execution of the Inbound Actions
+*- If no match is found the email is sent to the Inbox Junk folder
+- If automatic user creation is disabled, the Guest user is impersonated
+- Inbound Action scripts can reference the user using methods such as gs.getUserName()
+>>>
+There is no Junk-folder behavior. Unmatched senders fall back to Guest (if auto-create is off) or trigger user creation.
+<<<
+
+[[Q]]
+topic: Guided App Creator
+question: What intuitive development interface guides users through the initial application development process?
+- ServiceNow Creator
+- App Engine Studio
+*- Guided Application Creator
+- ServiceNow Studio
+>>>
+Guided Application Creator walks you through the initial app build (record, roles, tables, UX).
+<<<
+
+[[Q]]
+topic: Integration & Data
+question: Which utility is used to determine if field names in an Import Set match the field names on the target table when importing data?
+- CI Relationship Builder
+- Transform Maps
+- Business Service Management Map
+*- Auto Map Matching Fields
+>>>
+Auto Map Matching Fields auto-maps Import Set fields to target fields with matching names.
+<<<
+
+[[Q]]
+topic: Scripting & APIs
+question: Which of the following are NOT methods from the GlideRecord API? (Select 2)
+*- addOrQuery()
+- addEncodedQuery()
+- query()
+*- addAndQuery()
+- addQuery()
+>>>
+addOrQuery() and addAndQuery() are not GlideRecord methods. Valid: addQuery, addOrCondition, addEncodedQuery, query.
+<<<
+
+[[Q]]
+topic: Application Lifecycle
+question: When managing global application files, you can NOT:
+- Remove files from a global application
+- Add files from global scope to a global application
+- Move an application file between global applications
+*- Move application files into or out of scoped application
+>>>
+Scoped apps are isolated; you cannot move files into or out of a scoped application.
+<<<
+
+[[Q]]
+topic: App Design
+question: Which of the following would not be a good fit for an application to run on the ServiceNow instance?
+- Facilities Management application
+*- Virtual Reality Gaming application
+- Billing & Cost Management application
+- A meeting room scheduling application
+>>>
+VR gaming needs real-time high-performance compute/hardware — not a fit for ServiceNow.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: MyTable has field1, field2, field3. Table.None READ is set for Admin and Itil; Table.field3 READ is set for Admin only. What can the Itil role read?
+*- field1, field2
+- field2, field3
+- field1, field2, field3
+- field1, field3
+>>>
+Itil passes table read for all fields except field3, which is restricted to admin only.
+<<<
+
+[[Q]]
+topic: Security & Access
+question: The Access Analyzer can view and analyze access/permissions for which rule types? (Choose 3)
+- Business Rule
+*- REST endpoint
+- Data Views
+*- Client Callable Script Include
+*- UI Page
+- Reports
+>>>
+Access Analyzer evaluates Table, Client callable Script Include, UI Page, and REST endpoint rule types.
+<<<
+
