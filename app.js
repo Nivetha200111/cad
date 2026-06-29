@@ -1,21 +1,44 @@
-/* ServiceNow CAD Flashcards + Quiz Engine */
+/* ServiceNow CAD Flashcards + Quiz Engine (DB-backed, offline-resilient) */
 (function(){
   "use strict";
-  const Q = (window.ALL_QUESTIONS || []).map((q,i)=>({...q, _id:i}));
-  const PASS = 70; // CAD passing %
+  const PASS = 70;                 // CAD passing %
   const QUIZ_SIZE = 60, QUIZ_COUNT = 10;
+  let Q = [], QUIZZES = [], TOPICS = [];
+  const state = { online:false, player:'' };
+
   const LS = {
     get(k,d){ try{return JSON.parse(localStorage.getItem(k)) ?? d;}catch(e){return d;} },
     set(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
+  };
+
+  /* ---------- API client (gracefully degrades to offline) ---------- */
+  const API = {
+    async getQuestions(){
+      const r = await fetch('/api/questions',{headers:{accept:'application/json'}});
+      if(!r.ok) throw new Error('questions '+r.status);
+      const j = await r.json(); return j.questions||[];
+    },
+    async saveAttempt(p){
+      const r = await fetch('/api/attempts',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(p)});
+      if(!r.ok) throw new Error('save '+r.status);
+      return r.json();
+    },
+    async getAttempts(player){
+      const r = await fetch('/api/attempts?player='+encodeURIComponent(player),{headers:{accept:'application/json'}});
+      if(!r.ok) throw new Error('attempts '+r.status);
+      return (await r.json()).attempts||[];
+    },
+    async leaderboard(){
+      const r = await fetch('/api/attempts',{headers:{accept:'application/json'}});
+      if(!r.ok) throw new Error('lb '+r.status);
+      return (await r.json()).leaderboard||[];
+    }
   };
 
   /* ---------- seeded shuffle so quizzes are stable per build ---------- */
   function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
   function shuffle(arr, seed){const a=arr.slice();const r=mulberry32(seed);for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-  /* Build the 10 quizzes. If the bank has >= 600 questions we slice into
-     non-overlapping 60s; otherwise each exam is its own 60-question shuffle
-     of the full pool (standard mock-exam behavior, overlap allowed). */
   function buildQuizzes(){
     const ids = Q.map(q=>q._id);
     const quizzes=[];
@@ -30,24 +53,76 @@
     }
     return quizzes;
   }
-  const QUIZZES = buildQuizzes();
-
-  /* ---------- topics ---------- */
-  const TOPICS = [...new Set(Q.map(q=>q.topic))].sort();
 
   /* ---------- DOM helpers ---------- */
   const $=(s,el=document)=>el.querySelector(s);
-  const el=(tag,props={},...kids)=>{const n=document.createElement(tag);Object.entries(props).forEach(([k,v])=>{if(k==='class')n.className=v;else if(k==='html')n.innerHTML=v;else if(k.startsWith('on'))n.addEventListener(k.slice(2),v);else n.setAttribute(k,v);});kids.flat().forEach(k=>n.append(k?.nodeType?k:document.createTextNode(k??'')));return n;};
+  const el=(tag,props={},...kids)=>{const n=document.createElement(tag);Object.entries(props).forEach(([k,v])=>{if(v==null)return;if(k==='class')n.className=v;else if(k==='html')n.innerHTML=v;else if(k.startsWith('on'))n.addEventListener(k.slice(2),v);else n.setAttribute(k,v);});kids.flat().forEach(k=>n.append(k&&k.nodeType?k:document.createTextNode(k==null?'':k)));return n;};
   const app = $('#app');
 
-  /* ---------- header stats ---------- */
+  /* ---------- player name ---------- */
+  function getPlayer(){ return LS.get('cadPlayer',''); }
+  function ensurePlayer(){
+    return new Promise(resolve=>{
+      const existing=getPlayer();
+      if(existing){ state.player=existing; return resolve(existing); }
+      showNameModal('', false, name=>{ state.player=name; LS.set('cadPlayer',name); resolve(name); });
+    });
+  }
+  function showNameModal(prefill, cancelable, onSave){
+    const bg=el('div',{class:'modal-bg'});
+    const input=el('input',{type:'text',placeholder:'e.g. Nivetha',value:prefill||'',maxlength:'80'});
+    const save=()=>{const v=input.value.trim();if(!v){input.focus();return;}document.body.removeChild(bg);onSave(v);};
+    const row=el('div',{class:'row'});
+    if(cancelable) row.append(el('button',{class:'btn ghost',onclick:()=>document.body.removeChild(bg)},'Cancel'));
+    row.append(el('button',{class:'btn',onclick:save},'Save'));
+    bg.append(el('div',{class:'modal'},
+      el('h3',{},'What should we call you?'),
+      el('p',{},'Your exam results are saved under this name so your progress and leaderboard rank follow you across devices.'),
+      input, row));
+    document.body.append(bg);
+    input.focus();
+    input.addEventListener('keydown',e=>{if(e.key==='Enter')save();});
+  }
+  function changeName(){
+    showNameModal(state.player,true, async name=>{
+      state.player=name; LS.set('cadPlayer',name);
+      refreshHeader();
+      await syncFromCloud();
+      const active=document.querySelector('.tab.active')?.dataset.tab||'flash';
+      go(active);
+    });
+  }
+  window.__changeName=changeName;
+
+  /* ---------- header ---------- */
   function refreshHeader(){
     $('#stat-total').textContent = Q.length;
+    $('#player-name').textContent = state.player||'set name';
+    const dot=$('#sync-dot'); dot.className='sync-dot '+(state.online?'on':'off');
+    $('#stat-player').title = state.online? 'Synced to cloud — click to change name' : 'Offline (saved in this browser) — click to change name';
     const scores = LS.get('quizScores',{});
     const taken = Object.keys(scores).length;
     $('#stat-taken').textContent = taken+'/'+QUIZ_COUNT;
     const best = Object.values(scores).reduce((m,s)=>Math.max(m,s.pct),0);
     $('#stat-best').textContent = taken? best+'%':'—';
+  }
+
+  /* ---------- cloud sync ---------- */
+  async function syncFromCloud(){
+    if(!state.online||!state.player) return;
+    try{
+      const attempts = await API.getAttempts(state.player);
+      const scores = LS.get('quizScores',{});
+      // keep the best attempt per quiz across local + cloud
+      attempts.forEach(a=>{
+        const cur=scores[a.quiz];
+        if(!cur || a.pct>cur.pct){
+          scores[a.quiz]={pct:a.pct,correct:a.correct,total:a.total,perTopic:a.per_topic||{},ts:new Date(a.created_at).getTime()};
+        }
+      });
+      LS.set('quizScores',scores);
+      refreshHeader();
+    }catch(e){ /* ignore */ }
   }
 
   /* ===================== TAB: FLASHCARDS ===================== */
@@ -105,8 +180,8 @@
     const scores = LS.get('quizScores',{});
     app.append(el('div',{class:'card',style:'margin-bottom:16px'},
       el('p',{class:'muted',style:'margin:0'},
-        'All '+Q.length+' questions were shuffled and split into '+QUIZ_COUNT+' exam-style sets of '+QUIZ_SIZE+
-        ' questions. Passing score is '+PASS+'%. Your results feed the Scoreboard.')
+        'All '+Q.length+' questions are split into '+QUIZ_COUNT+' exam-style sets of '+QUIZ_SIZE+
+        ' questions. Passing score is '+PASS+'%. Results are saved'+(state.online?' to the cloud under "'+state.player+'"':' in this browser')+'.')
     ));
     const grid = el('div',{class:'grid cols2'});
     QUIZZES.forEach((ids,i)=>{
@@ -189,7 +264,6 @@
     nav.append(right);
     app.append(nav);
 
-    // jump grid
     const jump=el('div',{class:'card',style:'margin-top:16px'});
     jump.append(el('div',{class:'muted',style:'font-size:12px;margin-bottom:8px'},'Jump to question'));
     const jg=el('div',{style:'display:flex;flex-wrap:wrap;gap:6px'});
@@ -213,9 +287,9 @@
       perTopic[q.topic].t++; if(ok){perTopic[q.topic].c++;correct++;}
     });
     const pct=Math.round(correct/ids.length*100);
-    return {pct,correct,total:ids.length,perTopic,answered:Object.keys(run.answers).length};
+    return {pct,correct,total:ids.length,perTopic};
   }
-  function submitQuiz(){
+  async function submitQuiz(){
     const unanswered=run.ids.length-Object.keys(run.answers).length;
     if(unanswered>0 && !confirm(unanswered+' question(s) unanswered. Submit anyway?'))return;
     run.submitted=true;
@@ -225,6 +299,11 @@
     LS.set('quizScores',scores);
     refreshHeader();
     showResult(run.quiz);
+    // persist to cloud (best-effort)
+    if(state.online && state.player){
+      API.saveAttempt({player:state.player,quiz:run.quiz,pct:g.pct,correct:g.correct,total:g.total,perTopic:g.perTopic})
+        .catch(()=>{});
+    }
   }
 
   function showResult(i){
@@ -236,7 +315,7 @@
     ring.append(el('div',{class:'inner'},el('div',{class:'pct'},sc.pct+'%'),el('div',{class:'lbl'},sc.correct+' / '+sc.total+' correct')));
     hero.append(ring);
     hero.append(el('div',{class:'verdict '+(pass?'pass':'fail')}, pass?'PASS':'NOT YET'));
-    hero.append(el('div',{class:'muted'}, 'Passing score is '+PASS+'%. Exam '+(i+1)+'.'));
+    hero.append(el('div',{class:'muted'}, 'Passing score is '+PASS+'%. Exam '+(i+1)+(state.online?' • saved to cloud':' • saved locally')+'.'));
     hero.append(el('div',{class:'kpis'},
       el('div',{class:'kpi'},el('b',{},sc.correct),el('span',{},'Correct')),
       el('div',{class:'kpi'},el('b',{},(sc.total-sc.correct)),el('span',{},'Incorrect')),
@@ -292,7 +371,6 @@
     ));
     app.append(hero);
 
-    // per-exam
     const ec=el('div',{class:'card',style:'margin-top:16px'});
     ec.append(el('div',{class:'section-h'},'Exam scores'));
     for(let i=0;i<QUIZ_COUNT;i++){
@@ -306,7 +384,6 @@
     }
     app.append(ec);
 
-    // aggregate topic analysis across all attempts
     const agg={};
     taken.forEach(s=>Object.entries(s.perTopic||{}).forEach(([t,v])=>{agg[t]=agg[t]||{c:0,t:0};agg[t].c+=v.c;agg[t].t+=v.t;}));
     const tc=el('div',{class:'card',style:'margin-top:16px'});
@@ -327,26 +404,82 @@
     app.append(tc);
 
     app.append(el('div',{class:'center',style:'margin-top:18px'},
-      el('button',{class:'btn ghost',onclick:()=>{if(confirm('Clear all saved scores?')){LS.set('quizScores',{});refreshHeader();renderScoreboard();}}},'Reset all scores')));
+      el('button',{class:'btn ghost',onclick:()=>{if(confirm('Clear locally cached scores? (Cloud history is kept.)')){LS.set('quizScores',{});refreshHeader();syncFromCloud().then(renderScoreboard);}}},'Reset local scores')));
+  }
+
+  /* ===================== TAB: LEADERBOARD ===================== */
+  async function renderLeaderboard(){
+    app.innerHTML='';
+    app.append(el('div',{class:'card center',style:'padding:30px'},el('div',{class:'muted'},'Loading leaderboard…')));
+    if(!state.online){
+      app.innerHTML='';
+      app.append(el('div',{class:'card center',style:'padding:40px'},
+        el('div',{style:'font-size:40px'},'🏆'),
+        el('h3',{},'Leaderboard needs the database'),
+        el('p',{class:'muted'},'Connect a Vercel Postgres database to this project and the leaderboard will rank everyone by best score automatically. Until then, scores are saved in your browser only.')
+      ));
+      return;
+    }
+    let lb=[];
+    try{ lb=await API.leaderboard(); }catch(e){ app.innerHTML=''; app.append(el('div',{class:'card center',style:'padding:30px'},el('div',{class:'muted'},'Could not load leaderboard.')));return; }
+    app.innerHTML='';
+    const card=el('div',{class:'card'});
+    card.append(el('div',{class:'section-h'},'Leaderboard — best score per person'));
+    if(!lb.length){ card.append(el('p',{class:'muted'},'No attempts yet. Be the first!')); app.append(card); return; }
+    const tbl=el('table',{class:'lb'});
+    tbl.append(el('thead',{},el('tr',{},el('th',{class:'rank'},'#'),el('th',{},'Player'),el('th',{},'Best'),el('th',{},'Attempts'))));
+    const body=el('tbody',{});
+    lb.forEach((r,i)=>{
+      const tr=el('tr', r.player===state.player?{class:'me'}:{},
+        el('td',{class:'rank'}, '#'+(i+1)),
+        el('td',{}, r.player + (r.player===state.player?'  (you)':'')),
+        el('td',{class:'pct',style:'color:'+(r.best>=PASS?'var(--ok)':'var(--bad)')}, r.best+'%'),
+        el('td',{}, String(r.attempts))
+      );
+      body.append(tr);
+    });
+    tbl.append(body); card.append(tbl); app.append(card);
   }
 
   /* ===================== ROUTER ===================== */
   function go(tab){
+    if(!state.player){ ensurePlayer().then(()=>{refreshHeader();go(tab);}); return; }
     document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
     LS.set('activeTab',tab);
     if(tab==='flash')renderFlash();
     else if(tab==='quizzes')renderQuizList();
     else if(tab==='scoreboard')renderScoreboard();
+    else if(tab==='leaderboard')renderLeaderboard();
   }
   window.__go=go;
 
   document.addEventListener('keydown',e=>{
     if(document.querySelector('.tab.active')?.dataset.tab!=='flash')return;
+    if(!fcOrder.length)return;
     if(e.key==='ArrowRight'){fcIdx=(fcIdx+1)%fcOrder.length;fcFlip=false;renderFlash();}
     else if(e.key==='ArrowLeft'){fcIdx=(fcIdx-1+fcOrder.length)%fcOrder.length;fcFlip=false;renderFlash();}
     else if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();fcFlip=!fcFlip;renderFlash();}
   });
+  $('#stat-player').addEventListener('click',changeName);
 
-  refreshHeader();
-  go(LS.get('activeTab','flash'));
+  /* ===================== BOOTSTRAP ===================== */
+  async function bootstrap(){
+    // 1) load questions: DB first, fall back to bundled JS
+    try{
+      const dbq = await API.getQuestions();
+      if(dbq && dbq.length){ Q = dbq.map((q,i)=>({...q,_id:i})); state.online=true; }
+      else throw new Error('empty');
+    }catch(e){
+      Q = (window.ALL_QUESTIONS||[]).map((q,i)=>({...q,_id:i}));
+      state.online=false;
+    }
+    TOPICS = [...new Set(Q.map(q=>q.topic))].sort();
+    QUIZZES = buildQuizzes();
+
+    await ensurePlayer();
+    refreshHeader();
+    await syncFromCloud();
+    go(LS.get('activeTab','flash'));
+  }
+  bootstrap();
 })();

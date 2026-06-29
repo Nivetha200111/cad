@@ -1,0 +1,9 @@
+{
+  "name": "cad-trainer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ServiceNow CAD Trainer — flashcards, practice exams, scoreboard (Vercel + Postgres)",
+  "dependencies": {
+    "@vercel/postgres": "^0.10.0"
+  }
+}
