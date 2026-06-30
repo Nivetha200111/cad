@@ -144,9 +144,11 @@
   function weakDeck(){
     const qstats=LS.get('qstats',{});
     const byText={}; Q.forEach(q=>byText[q.q]=q);
+    // Combine every question missed across ALL practice exams. A question
+    // stays in the set until you've answered it right more often than wrong.
     const missed=Object.entries(qstats)
-      .filter(([t,s])=>byText[t] && s.lastWrong)
-      .sort((a,b)=>(b[1].wrong-a[1].wrong) || (b[1].lastTs-a[1].lastTs))
+      .filter(([t,s])=>byText[t] && s.wrong>0 && s.right<=s.wrong)
+      .sort((a,b)=>((b[1].wrong-b[1].right)-(a[1].wrong-a[1].right)) || (b[1].lastTs-a[1].lastTs))
       .map(([t])=>byText[t]._id);
     if(missed.length) return {ids:missed, reason:'missed'};
     // fallback: weakest topics from saved exam scores (per-topic mastery)
@@ -196,7 +198,7 @@
     if(fcTopic==='weak'){
       const wd=weakDeck();
       let msg;
-      if(wd.reason==='missed') msg='Showing the questions you missed on recent exams — most-missed, most-recent first.';
+      if(wd.reason==='missed') msg='Showing every question you have missed across all your practice exams, combined — most-missed first.';
       else if(wd.reason==='topics') msg='Showing cards from your weakest topics (under 99% mastery): '+(wd.topics||[]).join(', ')+'.';
       else msg='Take a Practice Exam and your weak spots will appear here. Showing all cards for now.';
       app.append(el('div',{class:'card reveal',style:'margin-bottom:16px;padding:14px 18px'},
@@ -428,7 +430,7 @@
   function showWeakResult(){
     const sc=lastWeak;
     renderResultView(sc, {
-      subtitle:'Targeted practice on your missed questions. Correct answers now drop out of your weak set.',
+      subtitle:'Targeted practice on questions missed across all your exams. A question clears once you answer it right more often than wrong.',
       breakdownLabel:'Topic breakdown — weak quiz',
       actions:[
         el('button',{class:'btn',onclick:()=>startWeakQuiz()},'↻ New weak quiz'),
@@ -462,7 +464,7 @@
     }
     const n=Math.min(wd.ids.length,60);
     const desc = wd.reason==='missed'
-      ? 'Built from the '+wd.ids.length+' question'+(wd.ids.length===1?'':'s')+' you have missed on recent exams — hardest first. Answer correctly and they drop out of your weak set.'
+      ? 'A combined set of the '+wd.ids.length+' question'+(wd.ids.length===1?'':'s')+' you have missed across all your practice exams — most-missed first. A question clears once you answer it right more often than wrong.'
       : 'No individually-missed questions are tracked yet, so this drills your weakest topics (under 99% mastery): '+(wd.topics||[]).join(', ')+'.';
 
     const hero=el('div',{class:'card score-hero reveal'});
